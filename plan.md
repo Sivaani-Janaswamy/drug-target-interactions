@@ -1,104 +1,201 @@
 # Plan.md — DTI-ML: 4-Week Execution Plan
 
-Team: 2 members (Member 1 and Member 2 — see work_division.md for role mapping)
+Team: 2 members (Member 1 and Member 2)
 Goal: working web app + IEEE-format paper draft by end of Week 4
 
-## Progress Tracker
+## Project Status Tracker
 
 ### Completed
-- [x] Repo scaffold created (`data/`, `features/`, `models/`, `app/`, `paper/`)
-- [x] Shared environment file and Python dependency setup complete
+- [x] Repo scaffold created
+- [x] Python environment + dependency setup complete
 - [x] Initial app skeleton created
-- [x] Project documentation and folder structure finalized
+- [x] Documentation structure prepared
 
-### In Progress / Planned
-- [ ] Download KIBA dataset and validate data format
-- [ ] Run EDA and confirm dataset statistics
+### Not Started / Planned
+- [ ] Download and validate KIBA dataset
+- [ ] Run EDA on interaction counts and score distribution
 - [ ] Build random, cold-drug, and cold-protein splits
 - [ ] Generate drug features with RDKit
 - [ ] Generate protein features with propy3
-- [ ] Train baseline models
-- [ ] Tune models and compare performance
-- [ ] Build SHAP interpretability and final app polish
-- [ ] Write paper sections and final presentation
+- [ ] Train baseline models on random split
+- [ ] Tune and compare model performance
+- [ ] Run evaluation metrics and SHAP analysis
+- [ ] Connect model output to web app
+- [ ] Finalize paper and presentation
 
 ---
 
-## Week 1 — Setup, Data, Feature Foundations
+## Phase Structure
 
-**Goals:** environment ready, data cleaned, splits built, both feature pipelines producing output on a sample.
+### Phase 1 — Foundation and Data Acquisition
+**Focus:** environment, data source, project setup, literature review
 
+**Member responsibilities**
+- Member 1: dataset sourcing, validation, and EDA
+- Member 2: baseline app skeleton and evaluation scaffolding
+
+**Deliverables**
+- repository and folders ready
+- dataset downloaded and validated
+- initial project notes and literature references
+
+**Exit criteria**
+- dataset can be loaded in Python
+- key statistics are understood
+- project structure is ready for feature generation
+
+---
+
+### Phase 2 — Data Cleaning and Split Generation
+**Focus:** train/test design and leakage-safe evaluation setup
+
+**Member responsibilities**
+- Member 1: clean the interaction table and construct splits
+- Member 2: support with evaluation design and dataset format checks
+
+**Deliverables**
+- cleaned interaction data
+- random split file
+- cold-drug split file
+- cold-protein split file
+
+**Exit criteria**
+- all three splits are reproducible
+- no obvious leakage or formatting issues remain
+
+---
+
+### Phase 3 — Feature Engineering
+**Focus:** convert molecules and proteins into usable ML features
+
+**Member responsibilities**
+- Member 1: RDKit drug features and protein feature extraction
+- Member 2: validation of feature dimensions and compatibility with model inputs
+
+**Deliverables**
+- drug fingerprints and descriptors
+- protein AAC / CTD / PseAAC features
+- feature matrices saved to disk
+
+**Exit criteria**
+- feature matrices are created for all samples
+- shapes and missing values are verified
+- model-ready inputs are available
+
+---
+
+### Phase 4 — Model Training and Tuning
+**Focus:** train and compare classical ML regressors
+
+**Member responsibilities**
+- Member 1: train and tune RF, XGBoost/LightGBM, SVR, GPR
+- Member 2: evaluation pipeline and model result logging
+
+**Deliverables**
+- baseline model results
+- tuned model checkpoints
+- first comparison table
+
+**Exit criteria**
+- all 4 models have at least one working training run
+- training/evaluation results are recorded
+
+---
+
+### Phase 5 — Evaluation, Interpretability, and App
+**Focus:** cold-split performance, SHAP explanations, working app demo
+
+**Member responsibilities**
+- Member 1: run full split evaluation and ablation experiments
+- Member 2: SHAP analysis, metrics validation, and app UI integration
+
+**Deliverables**
+- 12-cell results matrix
+- feature ablation table
+- SHAP visualizations
+- app with prediction flow
+
+**Exit criteria**
+- models are evaluated across random, cold-drug, and cold-protein splits
+- app predicts affinity input from user data
+- interpretability outputs are visible and understandable
+
+---
+
+### Phase 6 — Paper, Presentation, and Final Delivery
+**Focus:** final writing, polishing, and demo-ready delivery
+
+**Member responsibilities**
+- Member 1: methodology, dataset, model explanation, and paper sections
+- Member 2: experimental results, SHAP section, web app, final compilation
+
+**Deliverables**
+- final IEEE-format paper draft
+- final demo workflow
+- presentation and rehearsal notes
+
+**Exit criteria**
+- paper is internally consistent and complete
+- app is working and demo-ready
+- team has a final presentation plan
+
+---
+
+## Week-by-Week Schedule
+
+### Week 1 — Setup, Data, Feature Foundations
 | Day | Task | Owner |
 |---|---|---|
-| 1 | Repo scaffold (folders: `data/`, `features/`, `models/`, `app/`, `paper/`), shared environment file, literature skim (KronRLS, SimBoost, DeepDTA, GraphDTA — for Related Work) | Both |
-| 1–2 | Download KIBA (+ Davis as fallback), initial EDA (pair counts, score distribution, drug/protein counts) | Member 1 |
-| 2–3 | Build 3 split versions: random, cold-drug (unseen drug in test), cold-protein (unseen protein in test); save as reusable split files | Member 1 |
-| 2–4 | Drug feature pipeline: RDKit Morgan/ECFP fingerprints + physicochemical descriptors, run on full drug list | Member 1 |
-| 2–4 | Protein feature pipeline: AAC/CTD/PseAAC via `propy3`, run on full protein list; scope out ESM-2 embedding extraction as optional add-on | Member 1 |
-| 3–5 | Set up scikit-learn/XGBoost/LightGBM training scaffolding (data loaders reading feature + split files) | Member 1 |
-| 4–5 | Set up SHAP + evaluation metric scaffolding (MSE, RMSE, CI, Pearson r) so it's ready to run the moment models exist | Member 2 |
-| 5 | Web app skeleton (Streamlit page layout, no model wired in yet) | Member 2 |
+| 1 | Repo scaffold, environment setup, literature skim | Both |
+| 1–2 | Download KIBA and validate data | Member 1 |
+| 2–3 | Run EDA and confirm dataset statistics | Member 1 |
+| 2–4 | Generate split files | Member 1 |
+| 2–5 | Drug and protein feature extraction pipeline | Member 1 |
+| 4–5 | Evaluation scaffolding and app skeleton | Member 2 |
 
-**End-of-week deliverable:** cleaned dataset + 3 split files, drug + protein feature matrices saved to disk, repo scaffold, app skeleton.
+**Goal:** dataset and feature pipeline ready for training.
 
----
-
-## Week 2 — Model Training & First Results
-
-**Goals:** all 4 algorithms trained on random split at least once; feature pipeline fully validated.
-
+### Week 2 — Model Training and First Results
 | Day | Task | Owner |
 |---|---|---|
-| 1–2 | Train baseline versions of all 4 models (RF, XGBoost/LightGBM, SVR, GPR) on random split — get first numbers, even if unoptimized | Member 1 |
-| 1–2 | Optional ESM-2 embedding extraction (frozen, batch inference, cached to disk) for feature ablation later | Member 1 |
-| 2–3 | Hyperparameter tuning pass 1 (grid/random search) on random split for all 4 models | Member 1 |
-| 3–4 | Run evaluation scaffolding on Week 2 models — confirm MSE/RMSE/CI/Pearson r pipeline works end-to-end | Member 2 |
-| 3–5 | Feature ablation experiment: fingerprint-only vs. descriptor-only vs. combined vs. combined+ESM-2, on random split, using best-so-far algorithm | Both |
-| 4–5 | Web app: wire in one trained model (e.g., XGBoost) for a working input → prediction flow | Member 2 |
-| 5 | Weekly sync: review first results table, decide if any algorithm needs to be dropped/replaced per Section 10 risks in spec.md | Both |
+| 1–2 | Train baseline models on random split | Member 1 |
+| 2–3 | Hyperparameter tuning | Member 1 |
+| 3–4 | Validate metrics pipeline | Member 2 |
+| 3–5 | Feature ablation and initial results review | Both |
+| 4–5 | Wire one trained model into the app | Member 2 |
 
-**End-of-week deliverable:** first full results table (random split, all 4 algorithms), feature ablation results, working single-model prediction in the app.
+**Goal:** first trained results and a usable demo model.
 
----
-
-## Week 3 — Cold-Split Evaluation, Interpretability, Full App
-
-**Goals:** the paper's key result (cold-split comparison) is complete; SHAP visualizations done; app supports all models.
-
+### Week 3 — Cold-Split Evaluation and Interpretability
 | Day | Task | Owner |
 |---|---|---|
-| 1–2 | Train/evaluate all 4 algorithms on cold-drug and cold-protein splits (reuse tuned hyperparameters from Week 2) | Member 1 |
-| 1–3 | Build the full 12-cell results matrix (4 algorithms × 3 splits × metrics); start drafting Results section notes | Both |
-| 2–4 | SHAP analysis: run `TreeExplainer`/`KernelExplainer` on 3–5 showcase predictions, generate substructure/feature highlight plots | Member 2 |
-| 3–4 | Pharmacophore sanity-check: manually compare SHAP-highlighted substructures against known kinase-inhibitor binding motifs for the showcase examples | Both |
-| 3–5 | Web app: add model selector (all 4 algorithms), SHAP visualization overlay, uncertainty display for GPR | Member 2 |
-| 5 | Weekly sync: confirm all Section 11 (spec.md) deliverables except paper/app-polish are done | Both |
+| 1–2 | Evaluate models on cold-drug and cold-protein splits | Member 1 |
+| 1–3 | Build full results matrix | Both |
+| 2–4 | SHAP analysis and example validation | Member 2 |
+| 3–5 | Add full app interaction and model selector | Member 2 |
 
-**End-of-week deliverable:** full 12-cell results table, feature ablation table, SHAP visualizations with pharmacophore validation notes, app with model selector + interpretability view.
+**Goal:** complete results and interpretability outputs.
 
----
-
-## Week 4 — Web App Polish, Paper, Presentation
-
-**Goals:** app deployed and demo-ready; paper complete; presentation rehearsed.
-
+### Week 4 — Final App, Paper, and Presentation
 | Day | Task | Owner |
 |---|---|---|
-| 1–2 | Finish web app: "About the model" page, example gallery page, reference-drug comparison feature; deploy (Streamlit Cloud or local) | Member 2 |
-| 1–2 | Paper: Abstract, Introduction, Related Work | Member 1 |
-| 1–2 | Paper: Methodology (architecture, feature engineering, split protocol) | Member 1 |
-| 2–3 | Paper: Experimental Setup, Results & Discussion (tables + SHAP figures) | Member 2 (compiles) + Member 1 (provides content) |
-| 3–4 | Paper: Conclusion & Future Work, References; full read-through and edit pass | Both |
-| 4 | Record demo video/screenshots as backup in case live demo fails | Member 2 |
-| 4–5 | Rehearse presentation, assign speaking sections | Both |
-| 5 | Final buffer day: fix any last-minute app bugs, finalize paper submission version | Both |
+| 1–2 | Final app polish and deployment | Member 2 |
+| 1–2 | Paper: abstract, intro, method, related work | Member 1 |
+| 2–3 | Paper: results, discussion, experimental setup | Member 2 |
+| 3–4 | Final paper review and revision pass | Both |
+| 4–5 | Presentation rehearsal and final checks | Both |
 
-**End-of-week deliverable:** working deployed app, submission-ready IEEE paper, presentation deck + rehearsed demo.
+**Goal:** submission-ready app and paper.
 
 ---
 
-## Cross-Cutting Notes
+## Dependencies and Blockers
+- Model training cannot begin until the feature matrices are generated and validated.
+- Evaluation and SHAP analysis depend on trained model checkpoints.
+- App integration depends on model output and metrics being stable.
+- Paper writing depends on final experiment results and figures.
 
-- **Sync cadence:** short check-in at the end of each day (async message is fine), weekly review every Friday (end of week) per the table above.
-- **Blocking dependencies:** Week 2 model training depends on Week 1 feature pipelines — if the feature pipeline slips past Day 4 of Week 1, flag it immediately so the next tasks can start with a partial feature set rather than waiting.
-- **Paper writing is split across both members**, with the work distributed between data/model work and app/evaluation/paper compilation responsibilities.
+## Working Rule
+- Member 1 owns the data pipeline, feature engineering, and model training work.
+- Member 2 owns the evaluation, interpretation, app, and paper compilation work.
+- Both members review the final output before it is marked complete.

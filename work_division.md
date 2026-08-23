@@ -1,6 +1,6 @@
 # Work_Division.md — DTI-ML Team (2 Members)
 
-Use real names where marked `[Name]`. This version keeps the same project scope but combines the original 3-person responsibilities into 2 roles.
+This document defines the project ownership model for a 2-person workflow. It separates technical execution from evaluation and final delivery while keeping the project integrated.
 
 ## Progress Checklist
 
@@ -9,92 +9,109 @@ Use real names where marked `[Name]`. This version keeps the same project scope 
 - [x] Shared environment file created
 - [x] Initial project documentation finished
 - [x] Initial app skeleton created
-- [ ] Download + clean KIBA dataset
+- [ ] Download and validate KIBA dataset
+- [ ] Run EDA and confirm dataset statistics
 - [ ] Build split files
-- [ ] Drug feature extraction pipeline
-- [ ] Protein feature extraction pipeline
-- [ ] Model training and tuning
+- [ ] Generate drug and protein features
+- [ ] Train and tune models
 
 ### Member 2
 - [x] Initial evaluation scaffold planned
 - [x] App skeleton ready for wiring
-- [ ] Metric validation and SHAP analysis
-- [ ] Model integration into app
-- [ ] App final polish and deployment
-- [ ] Final paper compilation and presentation
+- [ ] Validate metrics pipeline
+- [ ] Integrate model output into app
+- [ ] Complete SHAP and interpretability analysis
+- [ ] Final app polish and deployment
+- [ ] Final paper compilation and presentation prep
 
 ---
 
-## Member 1 — Data, Feature Engineering & Model Training Lead
+## Team Operating Model
 
-**Owns:** dataset cleaning, splits, drug-side features, protein-side features, model training, tuning, and 1/2 of the paper.
+### Member 1 — Data, Feature Engineering, and Model Training Lead
+**Primary focus:** dataset engineering, feature generation, and model development
 
-| Week | Task | Works With |
-|---|---|---|
-| 1 | Repo scaffold setup, literature skim | Member 2 |
-| 1 | Download + clean KIBA, EDA | Solo |
-| 1 | Build 3 split versions (random, cold-drug, cold-protein) | Solo |
-| 1 | Drug feature pipeline: RDKit fingerprints + descriptors | Solo |
-| 1 | Protein feature pipeline: AAC/CTD/PseAAC via propy3 | Solo |
-| 1 | Set up training scaffolding (scikit-learn, XGBoost, LightGBM) | Solo |
-| 2 | Optional ESM-2 embedding extraction (frozen, cached) | Solo |
-| 2 | Train baseline versions of RF, XGBoost/LightGBM, SVR, GPR on random split | Solo |
-| 2 | Hyperparameter tuning pass 1 (all 4 models) | Solo |
-| 2 | Feature ablation study across drug/protein/combined variants | Member 2 |
-| 3 | Train/evaluate all 4 algorithms on cold-drug and cold-protein splits | Solo |
-| 3 | Build the full 12-cell results matrix | Member 2 |
-| 4 | Paper: Abstract, Introduction, Related Work, Methodology | Member 2 |
-| 4 | Final paper read-through/edit pass | Member 2 |
-| 4 | Presentation rehearsal | Member 2 |
+**Owned work**
+- download and clean KIBA dataset
+- exploratory data analysis
+- build split files for random, cold-drug, and cold-protein scenarios
+- generate RDKit drug fingerprints and descriptors
+- generate protein features using AAC, CTD, and PseAAC
+- set up model training and hyperparameter tuning
+- produce model checkpoints and result tables
 
-**Deliverables owned:** cleaned dataset, split files, drug feature matrix, protein feature matrix, trained/tuned models, feature ablation results, paper sections (Abstract, Introduction, Related Work, Methodology).
+**Deliverables**
+- cleaned dataset
+- split files
+- feature matrices
+- trained and tuned regression models
+- model results summary
 
----
-
-## Member 2 — Evaluation, Interpretability, Web App & Paper Lead
-
-**Owns:** evaluation metrics, SHAP analysis, app development, paper compilation, demo materials, and 1/2 of the paper.
-
-| Week | Task | Works With |
-|---|---|---|
-| 1 | Repo scaffold setup, literature skim | Member 1 |
-| 1 | Evaluation metric scaffolding (MSE, RMSE, CI, Pearson r) | Solo |
-| 1 | Web app skeleton (page layout, no model wired in) | Solo |
-| 2 | Validate evaluation pipeline against baseline models | Member 1 |
-| 2 | Wire in the first trained model to the app | Solo |
-| 2 | Support feature ablation analysis and result logging | Member 1 |
-| 3 | SHAP analysis on 3–5 showcase predictions | Solo |
-| 3 | Pharmacophore sanity-check on SHAP examples | Member 1 |
-| 3 | Web app: model selector, SHAP overlay, GPR uncertainty display | Solo |
-| 3 | Compile full 12-cell results matrix from model outputs | Member 1 |
-| 4 | Finish web app (About page, gallery page, reference-drug comparison), deploy | Solo |
-| 4 | Paper: Experimental Setup, Results & Discussion, Conclusion & Future Work, References | Member 1 |
-| 4 | Record demo video/screenshots backup | Solo |
-| 4 | Final compiled paper and presentation rehearsal | Member 1 |
-
-**Deliverables owned:** evaluation pipeline, SHAP visualizations, complete web app, results tables, final paper compilation, demo backup materials.
+**Review requirement**
+- final model outputs must be checked with Member 2 before being used in the final paper or app
 
 ---
 
-## Shared Responsibilities (Both Members)
+### Member 2 — Evaluation, Interpretability, Web App, and Final Delivery Lead
+**Primary focus:** evaluation quality, interpretability, app development, and final documentation
 
-- Daily async check-in; weekly sync at the end of each week
-- Final paper read-through and edit pass (Week 4)
-- Presentation rehearsal and speaking-section assignment (Week 4)
-- Immediate flagging of blockers whenever any pipeline slips behind schedule
-- Shared ownership of the final app and submission-ready paper
+**Owned work**
+- metric scaffolding (MSE, RMSE, CI, Pearson r)
+- model evaluation pipeline validation
+- SHAP analysis and example interpretation
+- app design and model integration
+- final app polish and deployment
+- final paper compilation and presentation prep
 
-## Handoff Points (Critical Dependencies)
+**Deliverables**
+- evaluation pipeline
+- SHAP figures and notes
+- working web app
+- final paper draft
+- demo and presentation materials
 
-| From | To | What | By When |
+**Review requirement**
+- app and paper outputs must be checked against the model results before final submission
+
+---
+
+## Shared Responsibilities
+
+Both members share responsibility for:
+- weekly progress review
+- blocker flagging when a dependency slips
+- final paper review and approval
+- final app check before presentation
+- final presentation rehearsal
+
+---
+
+## Phase Ownership Matrix
+
+| Phase | Primary Owner | Supporting Owner | Outcome |
 |---|---|---|---|
-| Member 1 | Member 2 | Cleaned datasets, split files, feature matrices | End of Week 1 |
-| Member 1 | Member 2 | Baseline trained model checkpoints and tuning results | Mid Week 2 |
-| Member 1 | Member 2 | Full 12-cell result matrix and ablation outputs | End of Week 3 |
-| Both | Both | Final result tables, SHAP figures, methodology notes for paper completion | Throughout Week 4 |
+| Phase 1 — Foundation and data acquisition | Member 1 | Member 2 | project ready for data work |
+| Phase 2 — Data cleaning and splits | Member 1 | Member 2 | reproducible train/test design |
+| Phase 3 — Feature engineering | Member 1 | Member 2 | usable feature sets |
+| Phase 4 — Model training and tuning | Member 1 | Member 2 | trained models and result logs |
+| Phase 5 — Evaluation and SHAP | Member 2 | Member 1 | final metrics and interpretation |
+| Phase 6 — App and paper finalization | Member 2 | Member 1 | working app + submission-ready paper |
 
-## Notes for a 2-Person Team
+---
 
-- The workload is intentionally distributed so one member owns data/model pipeline tasks while the other owns evaluation/app/paper flows.
-- Both roles still collaborate heavily during model evaluation and final writing.
-- If one member is blocked, the other should continue with downstream tasks instead of waiting, to minimize schedule risk.
+## Critical Dependencies
+
+| Dependency | Depends On | Owner |
+|---|---|---|
+| model training can start | cleaned dataset + split files + feature matrices | Member 1 |
+| evaluation results can be produced | trained model checkpoints | Member 1 |
+| app can be finalized | validated model outputs | Member 2 |
+| paper can be completed | final metrics, figures, and app evidence | Both |
+
+---
+
+## Working Rule
+
+- Member 1 is responsible for the technical pipeline.
+- Member 2 is responsible for interpretability, validation, and final product delivery.
+- If one person is blocked, the other should continue with downstream work without waiting, while still recording the dependency clearly.
