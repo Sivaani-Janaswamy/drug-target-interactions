@@ -45,6 +45,9 @@ def load_kiba_matrix() -> pd.DataFrame:
     proteins = list(proteins_dict.keys())
 
     affinity_matrix = np.genfromtxt(affinity_file, delimiter="\t", dtype=float, comments=None)
+    if affinity_matrix.shape[1] == len(proteins) + 1:
+        affinity_matrix = affinity_matrix[:, :len(proteins)]
+
     if affinity_matrix.shape != (len(ligands), len(proteins)):
         raise ValueError(
             f"Unexpected KIBA matrix shape: {affinity_matrix.shape}; expected {(len(ligands), len(proteins))}."
