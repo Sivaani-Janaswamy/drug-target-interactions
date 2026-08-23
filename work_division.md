@@ -2,6 +2,27 @@
 
 Use real names where marked `[Name]`. This version keeps the same project scope but combines the original 3-person responsibilities into 2 roles.
 
+## Progress Checklist
+
+### Member 1
+- [x] Repo scaffold setup complete
+- [x] Shared environment file created
+- [x] Initial project documentation finished
+- [x] Initial app skeleton created
+- [ ] Download + clean KIBA dataset
+- [ ] Build split files
+- [ ] Drug feature extraction pipeline
+- [ ] Protein feature extraction pipeline
+- [ ] Model training and tuning
+
+### Member 2
+- [x] Initial evaluation scaffold planned
+- [x] App skeleton ready for wiring
+- [ ] Metric validation and SHAP analysis
+- [ ] Model integration into app
+- [ ] App final polish and deployment
+- [ ] Final paper compilation and presentation
+
 ---
 
 ## Member 1 — Data, Feature Engineering & Model Training Lead
