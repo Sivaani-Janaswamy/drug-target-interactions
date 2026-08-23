@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+
+# Data and large artifacts
+*.csv
+*.parquet
+*.pkl
+*.joblib
+*.npy
+*.npz
+*.h5
+*.hdf5
+
+# Project outputs
+features/**/*.npy
+features/**/*.pkl
+models/**/*.pkl
+models/**/*.joblib
+logs/
+wandb/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
