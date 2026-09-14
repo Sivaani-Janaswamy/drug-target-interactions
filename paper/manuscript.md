@@ -17,7 +17,7 @@ Most existing literature evaluates DTI models using standard **random train/test
 2. **Leakage-Safe Cold-Split Evaluation**: Quantification of performance degradation across Random, Cold-Drug, and Cold-Protein splits using Concordance Index (CI), RMSE, MSE, and Pearson $r$.
 3. **1,071-Dimensional Joint Representation**: Integration of RDKit Morgan fingerprints + physicochemical descriptors with protein Amino Acid Composition (AAC) and CTD descriptors.
 4. **SHAP-Based Explainability**: Per-prediction feature attributions identifying top contributing molecular substructures and amino acid composition patterns.
-5. **Interactive Web Application**: Deployed multi-tab Streamlit application rendering 2D structures, real-time affinity scoring, and interactive SHAP attribution charts.
+5. **Interactive Web Application**: React and FastAPI application rendering the approved six-page product interface, real-time affinity scoring, and interactive SHAP attribution explanations.
 
 ---
 
@@ -94,7 +94,7 @@ Using SHAP (`TreeExplainer` and generic kernel fallbacks), feature attributions 
 
 ## VI. CONCLUSION
 
-DTI-ML establishes an interpretable, reproducible, classical machine learning benchmark for kinase affinity regression. By evaluating across Random, Cold-Drug, and Cold-Protein splits, we highlight the necessity of leak-free evaluation protocols in computer-aided drug design. The integrated Streamlit web application allows researchers to interactively explore predictions and feature attributions in real time.
+DTI-ML establishes an interpretable, reproducible, classical machine learning benchmark for kinase affinity regression. By evaluating across Random, Cold-Drug, and Cold-Protein splits, we highlight the necessity of leak-free evaluation protocols in computer-aided drug design. The integrated React and FastAPI application allows researchers to interactively explore predictions and feature attributions in real time.
 
 ---
 

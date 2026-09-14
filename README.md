@@ -18,7 +18,7 @@ Unlike standard drug-target interaction (DTI) models that suffer from similarity
     *   *Drugs:* RDKit-derived Morgan (ECFP) fingerprints + physical-chemical descriptors.
     *   *Proteins:* Amino Acid Composition (AAC), Composition/Transition/Distribution (CTD), Pseudo Amino Acid Composition (PseAAC), and optional pre-trained protein language model embeddings (ESM-2).
 *   **Explainable AI (XAI):** SHAP-based feature attribution mapped back onto 2D molecular structures and sequence-based descriptors, making predictions transparent and chemically verifiable.
-*   **Streamlit Interactive App:** A web interface allowing researchers to paste SMILES strings and protein sequences, choose a model, visualize binding affinity, view prediction confidence, and inspect structural highlight maps.
+*   **React + FastAPI Application:** A mockup-faithful web interface allowing researchers to paste SMILES strings and protein sequences, choose a model, visualize binding affinity, view prediction confidence, and inspect SHAP explanations.
 
 ---
 
@@ -74,8 +74,9 @@ graph TD
 ## 📁 Repository Structure
 
 ```text
-├── app/                  # Streamlit web application code
-│   └── streamlit_app.py  # Interactive user interface
+├── app/                  # Reusable Python application helpers
+├── backend/              # FastAPI prediction, benchmark, and chatbot API
+└── frontend/             # React production interface matching the mockup
 ├── data/                 # Raw datasets, cleaning scripts, and split files
 │   └── build_kiba_dataset.py
 ├── features/             # Feature extraction and ablation code
@@ -138,11 +139,21 @@ Generate the compound Morgan fingerprints and protein sequence descriptors, cach
 *(Refer to `models/` directory for model scripts)*
 Train the benchmark regressors and tune hyper-parameters on the splits. Checkpoints and evaluation metrics will be exported.
 
-### Step 4: Launch Web Dashboard
-Run the Streamlit interactive dashboard locally:
+### Step 4: Launch the API
+Run the FastAPI backend locally:
 ```bash
-streamlit run app/streamlit_app.py
+uvicorn backend.main:app --reload
 ```
+
+### Step 5: Launch the React frontend
+In a second terminal:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend runs at `http://localhost:5173` and calls the API at `http://127.0.0.1:8000` by default. Set `VITE_API_BASE` when the API is hosted elsewhere.
 
 ---
 

@@ -2,13 +2,9 @@
 
 > Documentation only. No implementation in this task.
 
-**Note on framework:** the app is built with **Streamlit** (`app/streamlit_app.py`), not
-Flask with static HTML/JS. There is no `dti-ml-frontend-mockup.html` in this repo. This
-spec's contract is written framework-agnostically (request/response shape) so it can be
-implemented either as a Streamlit-native chat block (`st.chat_input`/`session_state`,
-calling the Gemini SDK directly in-process) or, if the project moves to a separate
-backend later, as the Flask route shown below. The implementation task should confirm
-which of these applies before writing code.
+**Framework:** the production app uses a React frontend and FastAPI backend. The
+chat contract below is implemented by `backend/chat_service.py` and exposed through
+`POST /api/chat`; the React widget owns display state and calls the API directly.
 
 ## Provider
 
@@ -30,9 +26,8 @@ Request:  { "question": string,
 Response: { "answer": string }
 ```
 
-If implemented in Streamlit instead of a REST route, this becomes a function
-`get_chat_answer(question: str, context: dict) -> str` with the same input/output shape,
-called directly from the chat UI callback rather than over HTTP.
+The backend implementation uses `get_chat_answer(question, context, client_id)` internally,
+with the same input/output behavior and an HTTP response wrapper.
 
 ## Guardrails
 
@@ -49,8 +44,7 @@ called directly from the chat UI callback rather than over HTTP.
 
 1. Provision free Gemini API key, store as env var (`GEMINI_API_KEY`).
 2. Write grounding system prompt.
-3. Implement the chat contract above, in whichever form fits the app's actual framework
-   at the time (Streamlit chat block or a Flask/FastAPI route).
+3. Implement the chat contract above as the FastAPI route `POST /api/chat`.
 4. Wire the current prediction's score/label/top_features into the chat context.
 5. Add rate limiting + error fallback.
 6. Test locally, then add the key as a deployment secret.

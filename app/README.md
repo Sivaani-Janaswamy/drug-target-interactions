@@ -1,3 +1,3 @@
-# App directory
+# Application support code
 
-This folder contains the Streamlit app and any backend helper modules for predictions and visualization.
+The production UI is in `frontend/` and the HTTP API is in `backend/`. This folder retains reusable Python helpers for model loading, presets, score interpretation, and benchmark data.

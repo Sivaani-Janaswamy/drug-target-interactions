@@ -1,5 +1,5 @@
 """
-Helper utilities for Streamlit Web Application (app/helpers.py).
+Reusable utilities for the DTI-ML prediction API and frontend.
 
 Provides:
 - RDKit 2D molecular structure rendering

@@ -27,7 +27,7 @@ The production application must reproduce the mockup's:
 - Content hierarchy
 - Visual states
 
-The production implementation will use React for the browser interface and a Python API for prediction, benchmark, and chatbot functionality. Streamlit may remain temporarily as a development or fallback interface, but it is not the production frontend and must not redefine the product design.
+The production implementation will use React for the browser interface and a Python API for prediction, benchmark, and chatbot functionality. Streamlit is removed from the production repository and must not define any application behavior.
 
 ## 2. Why React Is Required
 
@@ -487,49 +487,49 @@ The exact numeric values will come from the selected model. The response shape m
 
 ### Backend extraction
 
-- [ ] Create a reusable prediction service independent of Streamlit
-- [ ] Create stable request and response schemas
-- [ ] Add FastAPI or Flask backend entrypoint
-- [ ] Add `GET /api/health`
-- [ ] Add `GET /api/presets`
-- [ ] Add `GET /api/benchmarks`
-- [ ] Add `POST /api/predict`
-- [ ] Add `POST /api/chat`
-- [ ] Validate SMILES, protein sequences, and model names
-- [ ] Make model paths independent of the process working directory
-- [ ] Cache loaded model checkpoints
-- [ ] Return separate drug and target names
-- [ ] Return human-readable SHAP explanations where possible
-- [ ] Add backend error handling and structured error responses
-- [ ] Add CORS configuration for local React development
+- [x] Create a reusable prediction service independent of Streamlit
+- [x] Create stable request and response schemas
+- [x] Add FastAPI backend entrypoint
+- [x] Add `GET /api/health`
+- [x] Add `GET /api/presets`
+- [x] Add `GET /api/benchmarks`
+- [x] Add `POST /api/predict`
+- [x] Add `POST /api/chat`
+- [x] Validate SMILES, protein sequences, and model names
+- [x] Make model paths independent of the process working directory
+- [x] Cache loaded model checkpoints
+- [x] Return separate drug and target names
+- [x] Return human-readable SHAP explanations where possible
+- [x] Add backend error handling and structured error responses
+- [x] Add CORS configuration for local React development
 
 ### React application
 
-- [ ] Create React frontend structure
-- [ ] Create shared design-token stylesheet
-- [ ] Load Space Grotesk, Inter, and IBM Plex Mono
-- [ ] Implement exact sticky header and brand mark
-- [ ] Implement six-page navigation
-- [ ] Implement Home page
-- [ ] Implement How it works page
-- [ ] Implement Try the predictor page
-- [ ] Implement Sample result page
-- [ ] Implement Model & science page
-- [ ] Implement About page
-- [ ] Implement floating chat widget
-- [ ] Implement page transitions
-- [ ] Implement preset chips
-- [ ] Implement model-selection cards
-- [ ] Implement loading states
-- [ ] Implement validation and error states
-- [ ] Implement docking animation
-- [ ] Implement docking replay
-- [ ] Implement animated affinity gauge
-- [ ] Implement SHAP reason rows
-- [ ] Implement responsive table
-- [ ] Implement mobile responsive layouts
-- [ ] Implement reduced-motion behavior
-- [ ] Implement keyboard and screen-reader support
+- [x] Create React frontend structure
+- [x] Create shared design-token stylesheet
+- [x] Load Space Grotesk, Inter, and IBM Plex Mono
+- [x] Implement exact sticky header and brand mark
+- [x] Implement six-page navigation
+- [x] Implement Home page
+- [x] Implement How it works page
+- [x] Implement Try the predictor page
+- [x] Implement Sample result page
+- [x] Implement Model & science page
+- [x] Implement About page
+- [x] Implement floating chat widget
+- [x] Implement page transitions
+- [x] Implement preset chips
+- [x] Implement model-selection cards
+- [x] Implement loading states
+- [x] Implement validation and error states
+- [x] Implement docking animation
+- [x] Implement docking replay
+- [x] Implement animated affinity gauge
+- [x] Implement SHAP reason rows
+- [x] Implement responsive table
+- [x] Implement mobile responsive layouts
+- [x] Implement reduced-motion behavior
+- [x] Implement keyboard and screen-reader support
 
 ### Data and content parity
 
@@ -566,9 +566,9 @@ The exact numeric values will come from the selected model. The response shape m
 
 ### Retirement of Streamlit production role
 
-- [ ] Keep Streamlit working during the migration as a fallback
-- [ ] Document that Streamlit is not the production design authority
-- [ ] Remove or archive Streamlit-specific UI code after React parity is accepted
+- [x] Remove Streamlit from the production application
+- [x] Document React and FastAPI as the final application architecture
+- [ ] Remove any remaining Streamlit references from generated documentation
 - [ ] Update README startup and deployment instructions
 - [ ] Update paper and project documentation to describe the final React/API architecture
 

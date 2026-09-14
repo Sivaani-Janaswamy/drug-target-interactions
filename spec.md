@@ -69,7 +69,7 @@ Kinases are one of the most drug-relevant protein families (cancer, inflammatory
 | Models | scikit-learn (Random Forest, SVR, Gaussian Process), XGBoost, LightGBM |
 | Interpretability | SHAP |
 | Experiment tracking | Weights & Biases (free tier) or plain CSV logs |
-| Web app | Flask (backend) + simple HTML/JS or Streamlit (faster to build) |
+| Web app | React frontend + FastAPI backend |
 | Paper | Overleaf, IEEE conference template |
 
 ## 6. Team Roles (3 members)
@@ -87,7 +87,7 @@ Kinases are one of the most drug-relevant protein families (cancer, inflammatory
 **Member C — Evaluation, Interpretability, Web App, Paper Lead**
 - Evaluation metrics + cold-split result tables across all algorithms
 - SHAP interpretability analysis + pharmacophore sanity-check on 3–5 examples
-- Flask/Streamlit demo app (SMILES + protein sequence in → affinity + SHAP visualization out)
+- React/FastAPI demo app (SMILES + protein sequence in → affinity + SHAP visualization out)
 - IEEE paper drafting lead (compiles all members' results into paper sections; writing still split evenly — see plan.md)
 
 ## 7. Evaluation Metrics
@@ -127,7 +127,7 @@ Kinases are one of the most drug-relevant protein families (cancer, inflammatory
 | Protein feature extraction (CTD/PseAAC) slow on full KIBA | Subsample proteins or use `propy3` batch mode; cache features to disk once |
 | GPR too slow on full dataset (O(n³) scaling) | Subsample to ~5–10K pairs for GPR only; keep RF/XGBoost/SVR on full data |
 | Full KIBA too large to train in time | Subsample to ~20–30K pairs, note it as a limitation in the paper |
-| Web app running behind | Streamlit over Flask — much faster to get working, still looks polished |
+| Web app running behind | Keep the API boundary small and use the approved React mockup as the implementation base |
 | SHAP computation slow for tree ensembles on full test set | Use `TreeExplainer` (fast, exact for RF/XGBoost) and compute SHAP only on the 3–5 showcase examples + a small validation subset |
 
 ## 11. Planned: Chatbot Feature
@@ -149,6 +149,6 @@ implemented.
 - [ ] Feature ablation results table
 - [ ] Results table across all splits, metrics, and algorithms
 - [ ] SHAP interpretability visualizations (min. 3 examples)
-- [ ] Working web app (deployed locally or on free hosting e.g. Streamlit Cloud)
+- [ ] Working React/FastAPI web app (deployed locally or on suitable free hosting)
 - [ ] IEEE-format paper draft
 - [ ] Presentation deck / demo script
