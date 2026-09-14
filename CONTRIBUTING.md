@@ -89,6 +89,7 @@ cd frontend
 npm ci
 npm test -- --run
 npm run build
+npm run test:e2e
 
 cd ..
 git diff --check

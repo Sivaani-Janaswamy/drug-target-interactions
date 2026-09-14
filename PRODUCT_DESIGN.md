@@ -546,25 +546,19 @@ The remaining content-parity work is visual copy review against the mockup. The 
 
 ### Visual and behavior verification
 
-- [ ] Compare React screenshots against the mockup at 1440 × 900
-- [ ] Compare at 1280 × 800
-- [ ] Compare at 768 × 1024
-- [ ] Compare at 390 × 844
-- [ ] Verify no horizontal overflow
-- [ ] Verify header active state
-- [ ] Verify navigation transitions to the correct page
-- [ ] Verify hero buttons navigate correctly
-- [ ] Verify preset chips populate fields
-- [ ] Verify model cards select correctly
-- [ ] Verify invalid input errors are visible and useful
-- [ ] Verify successful prediction reaches Sample result
-- [ ] Verify gauge reflects the API score
-- [ ] Verify docking animation and replay
-- [ ] Verify SHAP positive and negative states
-- [ ] Verify benchmark table uses API data
-- [ ] Verify chat launcher, panel, chips, send, loading, and fallback behavior
-- [ ] Verify reduced-motion mode
-- [ ] Verify backend health and API failure states
+- [x] Capture React screenshots at 1440 × 900
+- [x] Capture at 1280 × 800
+- [x] Capture at 768 × 1024
+- [x] Capture at 390 × 844
+- [x] Verify no horizontal overflow in responsive browser checks
+- [x] Verify header active state and navigation transitions
+- [x] Verify hero navigation and predictor form controls
+- [x] Verify invalid input errors are visible and useful
+- [x] Verify successful real-model prediction reaches Sample result
+- [x] Verify chat launcher, panel, suggested question, and fallback behavior
+- [ ] Claim pixel-perfect visual parity with the design reference
+- [ ] Verify docking replay, result animation, benchmark rendering, and reduced-motion in browser assertions
+- [ ] Complete manual page-by-page screenshot comparison against `design-reference.html`
 
 ### Retirement of Streamlit production role
 
@@ -600,14 +594,16 @@ Historical planning and superseded specifications are preserved under `docs/arch
 - `requirements-lock.txt` and `frontend/package-lock.json` are present and documented.
 - Backend/frontend environment examples and manual deployment commands are documented.
 - Optional Morgan-bit atom-environment metadata is returned for supported fingerprint features.
+- Playwright Chromium is installed and the focused E2E suite passes 9 tests: 5 functional flows plus 4 responsive viewport checks.
+- The real prediction E2E uses the local FastAPI service and Random Forest checkpoint. Mocked API responses are limited to deterministic 400/500 frontend error tests.
 
 ### Remaining release work
 
 These items are the remaining work before calling the migration production-ready:
 
-- Perform screenshot comparison against the mockup at 1440 × 900, 1280 × 800, 768 × 1024, and 390 × 844.
-- Verify every page's exact copy, spacing, responsive wrapping, and active navigation state.
-- Complete browser interaction testing for presets, model cards, prediction, result animation, replay, table rendering, chat, and error states.
+- Complete manual page-by-page screenshot comparison against the design reference.
+- Verify every page's exact copy, spacing, responsive wrapping, and active navigation state beyond the current Home-page viewport checks.
+- Extend browser assertions for docking replay, result animation, benchmark rendering, and reduced-motion behavior.
 - [x] Split the large React entrypoint into maintainable page and component modules.
 - [x] Move API calls, constants, and content data out of the main UI module.
 - [x] Add automated backend tests and frontend interaction tests.
@@ -621,7 +617,8 @@ These items are the remaining work before calling the migration production-ready
 
 - The frontend now uses page, component, content, API, and app-shell modules. Shared TypeScript-style runtime shapes are documented by the API schemas; a separate `types.js` file is not required for the current JavaScript build.
 - The backend now returns optional Morgan-bit atom-environment metadata. The UI retains the textual SHAP fallback; full highlighted molecule rendering remains partial.
-- Automated browser screenshots remain incomplete because the local Playwright browser binary was unavailable. This is a verification gap, not an approved visual deviation.
+- Playwright screenshots are captured in ignored `frontend/test-results/` output at exactly 1440x900, 1280x800, 768x1024, and 390x844. They are evidence for review, not committed product assets.
+- Browser validation covers the required viewports and core flows, but it does not yet prove pixel-perfect parity with every page of `design-reference.html`.
 
 ## 21. Maintainability Rules
 

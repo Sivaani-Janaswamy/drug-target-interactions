@@ -77,7 +77,10 @@ The default URLs are `http://127.0.0.1:8000` for the API and `http://localhost:5
 npm ci
 npm test -- --run
 npm run build
+npm run test:e2e
 ```
+
+Playwright E2E tests start the local FastAPI and Vite servers automatically. The successful prediction flow uses the real local model; only deterministic error cases use API interception. Install Chromium once with `npx playwright install chromium` when browser tooling is available. E2E screenshots and reports are written to ignored test-output directories.
 
 ## Data and Models
 
