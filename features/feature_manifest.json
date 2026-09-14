@@ -1,0 +1,22 @@
+{
+  "drug_feature_dim": 1030,
+  "protein_feature_dim": 197,
+  "drug_feature_count": 2111,
+  "protein_feature_count": 229,
+  "drug_failed": 0,
+  "protein_failed": 0,
+  "drug_features": [
+    "morgan_ecfp4_1024",
+    "molwt",
+    "logp",
+    "tpsa",
+    "hbd",
+    "hba",
+    "rotatable_bonds"
+  ],
+  "protein_features": [
+    "aac_20",
+    "ctd_147",
+    "pseaac_30"
+  ]
+}

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DTI-ML — Drug–Target Binding Predictor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12201F;
+    --paper:#F4F7F5;
+    --paper-alt:#EAEFEA;
+    --panel:#FFFFFF;
+    --line:#D7DED9;
+    --teal:#1F6F63;
+    --teal-deep:#0F4A41;
+    --amber:#DE9A34;
+    --amber-deep:#B87A1F;
+    --graphite:#5B655F;
+    --danger:#B84B3A;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(18,32,31,0.06), 0 6px 20px rgba(18,32,31,0.05);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(244,247,245,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-wrap{
+    max-width:1180px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; gap:16px; flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-mark{width:30px;height:30px;flex-shrink:0;}
+  .brand-text{font-family:'Space Grotesk'; font-weight:700; font-size:17px; letter-spacing:-0.01em;}
+  .brand-sub{font-size:11px; color:var(--graphite); font-family:'IBM Plex Mono'; letter-spacing:0.03em;}
+  nav{display:flex; gap:4px; flex-wrap:wrap;}
+  .navlink{
+    padding:8px 13px; border-radius:20px; font-size:13.5px; font-weight:500;
+    cursor:pointer; color:var(--graphite); border:1px solid transparent; white-space:nowrap;
+    transition:all .15s ease;
+  }
+  .navlink:hover{color:var(--ink); background:var(--paper-alt);}
+  .navlink.active{color:var(--teal-deep); background:#E4EFEA; border-color:#CFE2D9;}
+
+  /* ---------- LAYOUT ---------- */
+  main{max-width:1180px; margin:0 auto; padding:0 24px 100px;}
+  .page{display:none; animation:fade .35s ease;}
+  .page.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  section{margin-top:56px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono'; font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--teal-deep); font-weight:500; margin-bottom:10px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:""; width:16px; height:1px; background:var(--amber-deep);}
+  .lede{font-size:16.5px; color:var(--graphite); max-width:640px; margin-top:12px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:64px 0 20px; display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px; align-items:center;
+  }
+  .hero h1{font-size:44px; line-height:1.08;}
+  .hero h1 em{font-style:normal; color:var(--teal-deep); border-bottom:3px solid var(--amber);}
+  .hero-actions{display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;}
+  .btn{
+    padding:12px 22px; border-radius:8px; font-size:14.5px; font-weight:600; cursor:pointer;
+    border:1px solid transparent; transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{background:var(--teal-deep); color:#fff;}
+  .btn-primary:hover{background:var(--teal);}
+  .btn-ghost{background:transparent; border-color:var(--line); color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--graphite);}
+
+  .hero-visual{
+    background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:28px;
+    box-shadow:var(--shadow);
+  }
+  .hero-visual svg{width:100%; height:auto; display:block;}
+
+  /* ---------- PIPELINE STRIP ---------- */
+  .pipeline{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:20px;
+    border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--panel);
+  }
+  .pstep{padding:22px 20px; border-right:1px solid var(--line); position:relative;}
+  .pstep:last-child{border-right:none;}
+  .pstep .num{
+    font-family:'IBM Plex Mono'; font-size:11px; color:var(--amber-deep); font-weight:500;
+  }
+  .pstep h3{font-size:15.5px; margin-top:8px;}
+  .pstep p{font-size:13px; color:var(--graphite); margin-top:6px;}
+  .pstep::after{
+    content:"→"; position:absolute; right:-11px; top:50%; transform:translateY(-50%);
+    color:var(--amber-deep); font-size:15px; background:var(--panel); width:20px; text-align:center; z-index:2;
+  }
+  .pstep:last-child::after{content:"";}
+
+  /* ---------- CARD GRID ---------- */
+  .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:24px;}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:24px;}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:24px;
+  }
+  .card h3{font-size:16.5px; display:flex; align-items:center; gap:10px;}
+  .card .icon{width:26px; height:26px; flex-shrink:0;}
+  .card p{font-size:14px; color:var(--graphite); margin-top:10px;}
+  .analogy{
+    margin-top:12px; font-size:13px; padding:10px 12px; background:var(--paper-alt);
+    border-left:2px solid var(--amber-deep); border-radius:0 6px 6px 0; color:var(--ink);
+  }
+  .analogy b{color:var(--teal-deep);}
+
+  /* ---------- FORM (Try it) ---------- */
+  .try-layout{display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-top:26px;}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:26px;}
+  .field{margin-bottom:18px;}
+  .field label{font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; margin-bottom:6px;}
+  .helptext{font-size:12px; color:var(--graphite); font-weight:400;}
+  .field input, .field select, .field textarea{
+    width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:8px;
+    font-size:13.5px; font-family:'IBM Plex Mono'; background:var(--paper); color:var(--ink);
+  }
+  .field textarea{resize:vertical; min-height:56px;}
+  .field select{font-family:'Inter'; cursor:pointer;}
+  .example-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+  .chip{
+    font-size:11.5px; padding:5px 10px; border:1px solid var(--line); border-radius:20px; cursor:pointer;
+    background:var(--paper-alt); color:var(--graphite); font-family:'Inter';
+  }
+  .chip:hover{border-color:var(--teal);}
+  .model-select{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:6px;}
+  .model-opt{
+    border:1px solid var(--line); border-radius:8px; padding:10px 12px; cursor:pointer; font-size:13px;
+  }
+  .model-opt.selected{border-color:var(--teal); background:#E4EFEA;}
+  .model-opt .mname{font-weight:600;}
+  .model-opt .mnote{font-size:11px; color:var(--graphite); margin-top:2px;}
+
+  /* preview mini panel */
+  .mini-note{
+    display:flex; gap:10px; align-items:flex-start; padding:12px 14px; background:var(--paper-alt);
+    border-radius:8px; font-size:12.5px; color:var(--graphite); margin-top:16px;
+  }
+
+  /* ---------- RESULTS ---------- */
+  .gauge-wrap{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:28px; margin-top:24px;}
+  .gauge-top{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:10px;}
+  .gauge-score{font-family:'Space Grotesk'; font-size:38px; font-weight:700;}
+  .gauge-label{
+    font-size:13px; font-weight:600; padding:4px 12px; border-radius:20px; background:#FCEFDD; color:var(--amber-deep);
+  }
+  .gauge-track{position:relative; height:14px; background:linear-gradient(90deg,#8FBBB0,#1F6F63 40%,#DE9A34 75%,#B84B3A); border-radius:20px; margin:22px 0 8px;}
+  .gauge-marker{
+    position:absolute; top:-8px; width:3px; height:30px; background:var(--ink); border-radius:2px;
+  }
+  .gauge-scale{display:flex; justify-content:space-between; font-size:11px; color:var(--graphite); font-family:'IBM Plex Mono';}
+
+  .reason-list{margin-top:14px; display:flex; flex-direction:column; gap:10px;}
+  .reason{
+    display:flex; gap:12px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; align-items:flex-start;
+  }
+  .reason .bar{width:6px; align-self:stretch; border-radius:4px; flex-shrink:0;}
+  .reason .bar.pos{background:var(--teal);}
+  .reason .bar.neg{background:var(--danger);}
+  .reason .rtext{font-size:13px;}
+  .reason .rtext b{font-family:'IBM Plex Mono'; font-size:12.5px;}
+  .reason .rtext span{display:block; color:var(--graphite); margin-top:2px;}
+
+  /* ---------- SCIENCE / TABLE ---------- */
+  table{width:100%; border-collapse:collapse; margin-top:18px; font-size:13px;}
+  th,td{padding:10px 12px; border-bottom:1px solid var(--line); text-align:left;}
+  th{font-family:'Space Grotesk'; font-size:12.5px; color:var(--graphite); font-weight:600; background:var(--paper-alt);}
+  td.best{color:var(--teal-deep); font-weight:700;}
+  .split-tag{font-family:'IBM Plex Mono'; font-size:10.5px; padding:2px 7px; border-radius:10px; background:var(--paper-alt); color:var(--graphite);}
+
+  /* ---------- ABOUT ---------- */
+  .team-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:22px;}
+  .member{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px; text-align:left;}
+  .avatar{width:38px; height:38px; border-radius:50%; background:var(--teal-deep); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk'; font-weight:600; margin-bottom:10px;}
+  .member h3{font-size:14px;}
+  .member p{font-size:12px; color:var(--graphite); margin-top:4px;}
+
+  footer{
+    margin-top:80px; padding:28px 24px; border-top:1px solid var(--line); text-align:center;
+    font-size:12px; color:var(--graphite);
+  }
+
+  /* ---------- MOTION ---------- */
+  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  @keyframes dashMove{to{stroke-dashoffset:-24;}}
+  @keyframes popIn{from{opacity:0; transform:scale(.85);}to{opacity:1; transform:scale(1);}}
+  @keyframes wiggle{0%,100%{transform:rotate(0deg);}25%{transform:rotate(-3deg);}75%{transform:rotate(3deg);}}
+  @keyframes dockSlide{0%{transform:translateX(-92px);}70%{transform:translateX(4px);}85%{transform:translateX(-3px);}100%{transform:translateX(0);}}
+  @keyframes ringPulse{0%{opacity:.9; r:9;}50%{opacity:.35; r:16;}100%{opacity:0; r:22;}}
+  .hero-visual .keypath{stroke-dasharray:6 6; animation:dashMove 1.4s linear infinite;}
+  .hero-visual .keygroup{animation:floatY 3.2s ease-in-out infinite;}
+  .hero-visual .kinase-shape{animation:wiggle 4.5s ease-in-out infinite; transform-origin:290px 110px;}
+  .dock-scene{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px 24px 8px; margin-top:0;}
+  .dock-molecule{animation:dockSlide 1.1s cubic-bezier(.2,.9,.25,1) both;}
+  .dock-molecule.replay{animation:none;}
+  .dock-pulse{animation:ringPulse 1.6s ease-out 1.05s infinite;}
+  .gauge-marker{transition:left 1.1s cubic-bezier(.2,.85,.3,1);}
+  .gauge-score{transition:opacity .3s ease;}
+  .card{transition:transform .18s ease, box-shadow .18s ease;}
+  .card:hover{transform:translateY(-3px); box-shadow:var(--shadow);}
+  .pstep{transition:background .15s ease;}
+  .pstep:hover{background:var(--paper-alt);}
+  .chip{transition:transform .12s ease;}
+  .chip:hover{transform:translateY(-1px);}
+
+  /* ---------- CHAT WIDGET ---------- */
+  .chat-launcher{
+    position:fixed; right:22px; bottom:22px; z-index:80;
+    width:54px; height:54px; border-radius:50%; background:var(--teal-deep); color:#fff;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; border:none;
+    box-shadow:0 8px 22px rgba(15,74,65,0.35); animation:floatY 3s ease-in-out infinite;
+  }
+  .chat-panel{
+    position:fixed; right:22px; bottom:88px; z-index:80; width:320px; max-height:440px;
+    background:var(--panel); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow);
+    display:none; flex-direction:column; overflow:hidden;
+  }
+  .chat-panel.open{display:flex; animation:popIn .18s ease;}
+  .chat-head{padding:14px 16px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
+  .chat-head h4{font-size:13.5px; font-family:'Space Grotesk';}
+  .chat-head span{font-size:10.5px; color:var(--graphite); font-family:'IBM Plex Mono';}
+  .chat-close{cursor:pointer; color:var(--graphite); font-size:16px; line-height:1;}
+  .chat-body{padding:14px 16px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:10px; font-size:12.5px;}
+  .chat-msg{max-width:88%; padding:9px 11px; border-radius:10px; line-height:1.45;}
+  .chat-msg.bot{background:var(--paper-alt); align-self:flex-start; border-bottom-left-radius:3px;}
+  .chat-msg.user{background:#E4EFEA; color:var(--teal-deep); align-self:flex-end; border-bottom-right-radius:3px; font-weight:500;}
+  .chat-typing{align-self:flex-start; display:flex; gap:4px; padding:10px 12px;}
+  .chat-typing span{width:5px; height:5px; border-radius:50%; background:var(--graphite); animation:floatY 1s ease-in-out infinite;}
+  .chat-typing span:nth-child(2){animation-delay:.15s;}
+  .chat-typing span:nth-child(3){animation-delay:.3s;}
+  .chat-suggest{padding:10px 16px 14px; display:flex; flex-wrap:wrap; gap:6px; border-top:1px solid var(--line);}
+
+  @media (max-width:820px){
+    .hero{grid-template-columns:1fr;}
+    .pipeline{grid-template-columns:1fr 1fr;}
+    .pstep::after{display:none;}
+    .grid-3, .team-grid{grid-template-columns:1fr 1fr;}
+    .grid-2, .try-layout{grid-template-columns:1fr;}
+    .hero h1{font-size:32px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 30 30" fill="none">
+        <circle cx="9" cy="15" r="5" fill="#1F6F63"/>
+        <circle cx="21" cy="9" r="4" fill="#DE9A34"/>
+        <circle cx="21" cy="21" r="4" fill="#DE9A34" opacity="0.55"/>
+        <line x1="9" y1="15" x2="21" y2="9" stroke="#12201F" stroke-width="1.4"/>
+        <line x1="9" y1="15" x2="21" y2="21" stroke="#12201F" stroke-width="1.4" opacity="0.5"/>
+      </svg>
+      <div>
+        <div class="brand-text">DTI&#8209;ML</div>
+        <div class="brand-sub">binding affinity predictor</div>
+      </div>
+    </div>
+    <nav>
+      <div class="navlink active" data-page="home">Home</div>
+      <div class="navlink" data-page="how">How it works</div>
+      <div class="navlink" data-page="try">Try the predictor</div>
+      <div class="navlink" data-page="results">Sample result</div>
+      <div class="navlink" data-page="science">Model &amp; science</div>
+      <div class="navlink" data-page="about">About</div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= HOME ================= -->
+  <div class="page active" id="home">
+    <div class="hero">
+      <div>
+        <div class="eyebrow">VTU Major Project · AI &amp; Data Science</div>
+        <h1>Predicting whether a drug <em>fits</em> its target &mdash; before it's ever tested in a lab.</h1>
+        <p class="lede">Feed it a drug and a protein. It predicts how tightly they'd bind &mdash; tested only on pairs it's never seen before.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="goTo('try')">Try a prediction &rarr;</button>
+          <button class="btn btn-ghost" onclick="goTo('how')">What does this actually mean?</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <svg viewBox="0 0 380 220">
+          <!-- simple lock and key metaphor -->
+          <rect x="0" y="0" width="380" height="220" fill="none"/>
+          <g class="keygroup">
+            <circle cx="95" cy="110" r="46" fill="#E4EFEA" stroke="#1F6F63" stroke-width="2"/>
+            <path d="M75 96 l14 14 -14 14" stroke="#1F6F63" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="95" cy="110" r="9" fill="#1F6F63"/>
+          </g>
+          <text x="95" y="172" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#5B655F">drug (SMILES)</text>
+
+          <path class="keypath" d="M155 110 h60" stroke="#DE9A34" stroke-width="2"/>
+          <text x="185" y="98" text-anchor="middle" font-family="Space Grotesk" font-size="11" fill="#B87A1F">binds?</text>
+
+          <g class="kinase-shape">
+          <rect x="245" y="70" width="90" height="80" rx="12" fill="#FCEFDD" stroke="#DE9A34" stroke-width="2"/>
+          <path d="M270 110 q20 -26 40 0 q-20 26 -40 0 z" fill="none" stroke="#B87A1F" stroke-width="2.5"/>
+          </g>
+          <text x="290" y="172" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#5B655F">kinase (protein)</text>
+
+          <text x="190" y="30" text-anchor="middle" font-family="Space Grotesk" font-weight="600" font-size="13" fill="#12201F">Affinity score = how tightly it fits</text>
+        </svg>
+      </div>
+    </div>
+
+    <section>
+      <div class="eyebrow">The pipeline, in four steps</div>
+      <div class="pipeline">
+        <div class="pstep">
+          <div class="num">01</div>
+          <h3>Read the drug &amp; protein</h3>
+          <p>The drug is written as a text code (SMILES); the protein as its amino-acid sequence. No 3D lab data needed.</p>
+        </div>
+        <div class="pstep">
+          <div class="num">02</div>
+          <h3>Turn them into numbers</h3>
+          <p>Chemistry software converts each into structured features &mdash; shape, composition, physical properties.</p>
+        </div>
+        <div class="pstep">
+          <div class="num">03</div>
+          <h3>Ask the model</h3>
+          <p>Four different ML algorithms independently estimate how strong the interaction is.</p>
+        </div>
+        <div class="pstep">
+          <div class="num">04</div>
+          <h3>Explain the answer</h3>
+          <p>The tool shows not just a score, but which features pushed it up or down.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="eyebrow">Why this matters</div>
+      <div class="grid-3">
+        <div class="card">
+          <h3><svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#1F6F63" stroke-width="2"/><path d="M12 7v5l3 3" stroke="#1F6F63" stroke-width="2" stroke-linecap="round"/></svg>Faster than lab testing</h3>
+          <p>Screening a candidate drug computationally takes seconds. Testing it physically can take weeks and real money.</p>
+        </div>
+        <div class="card">
+          <h3><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z" stroke="#DE9A34" stroke-width="2"/></svg>Honestly evaluated</h3>
+          <p>We test on drugs and proteins the model has <b>never seen before</b> &mdash; not just shuffled copies of its training data.</p>
+        </div>
+        <div class="card">
+          <h3><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 12h4l2-7 4 14 2-7h4" stroke="#B84B3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Not a black box</h3>
+          <p>Every prediction comes with a plain-language reason, so the "why" is never hidden behind the score.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <div class="page" id="how">
+    <section style="margin-top:40px;">
+      <div class="eyebrow">Plain-language explainer</div>
+      <h2 style="font-size:30px;">Five terms this project relies on &mdash; explained without the jargon</h2>
+      <p class="lede">You don't need a biology background to follow this. Here's every technical term on this site, explained once, properly.</p>
+    </section>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>What's a kinase?</h3>
+        <p>A kinase is a protein that acts like a molecular <b>switch</b> &mdash; it turns other proteins on or off inside a cell. When kinases misfire, cells can grow uncontrollably, which is why they're one of the most important drug targets in cancer treatment.</p>
+        <div class="analogy"><b>Think of it as:</b> a light switch. The wrong drug flips it the wrong way; the right drug holds it exactly where you want it.</div>
+      </div>
+      <div class="card">
+        <h3>What's "binding affinity"?</h3>
+        <p>It's a number describing how strongly a drug molecule sticks to its target protein. Higher affinity generally means the drug is more effective at that target &mdash; and less likely to need a huge dose.</p>
+        <div class="analogy"><b>Think of it as:</b> how snugly a key fits a lock. A loose fit barely turns it; a snug fit works reliably.</div>
+      </div>
+      <div class="card">
+        <h3>Why "cold-split" evaluation?</h3>
+        <p>Most simple tests let a model see similar drugs or proteins during both training and testing &mdash; which makes it look smarter than it is. A cold split removes that overlap entirely, so the reported accuracy reflects real-world performance on drugs it has genuinely never encountered.</p>
+        <div class="analogy"><b>Think of it as:</b> testing a student on questions from a totally different textbook, not the one they studied from.</div>
+      </div>
+      <div class="card">
+        <h3>What is SHAP, and why show it?</h3>
+        <p>SHAP is a method that scores how much each input feature (a molecule shape, a protein property) pushed the final prediction up or down. Instead of trusting the model blindly, you can see exactly what it "noticed."</p>
+        <div class="analogy"><b>Think of it as:</b> a teacher showing their working, not just the final answer on the exam.</div>
+      </div>
+    </div>
+
+    <section>
+      <div class="eyebrow">The four models we compare</div>
+      <p class="lede">Rather than picking one algorithm and hoping it's right, this project trains four different classical ML models on the exact same data, so their strengths and weaknesses can be compared directly.</p>
+      <div class="grid-3">
+        <div class="card"><h3>Random Forest</h3><p>Many decision trees voting together. Robust, hard to fool, good default baseline.</p></div>
+        <div class="card"><h3>XGBoost / LightGBM</h3><p>Trees built one after another, each correcting the last one's mistakes. Usually the most accurate.</p></div>
+        <div class="card"><h3>Support Vector Regression</h3><p>Finds the smoothest boundary that still respects the data. Good with smaller, cleaner feature sets.</p></div>
+        <div class="card"><h3>Gaussian Process</h3><p>Slower, but tells you how <i>confident</i> it is in each prediction &mdash; not just the number itself.</p></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= TRY IT ================= -->
+  <div class="page" id="try">
+    <section style="margin-top:40px;">
+      <div class="eyebrow">Interactive demo</div>
+      <h2 style="font-size:28px;">Try a prediction</h2>
+      <p class="lede">Pick a real example, or paste your own. No chemistry knowledge needed &mdash; the dropdowns give you known drugs and kinases to start with.</p>
+    </section>
+
+    <div class="try-layout">
+      <div class="panel">
+        <div class="field">
+          <label>Drug molecule <span class="helptext">&mdash; as a SMILES string</span></label>
+          <textarea placeholder="e.g. CC(=O)OC1=CC=CC=C1C(=O)O">CC(=O)OC1=CC=CC=C1C(=O)O</textarea>
+          <div class="example-row">
+            <div class="chip">Aspirin</div>
+            <div class="chip">Imatinib</div>
+            <div class="chip">Gefitinib</div>
+            <div class="chip">Paste my own &hellip;</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Target protein <span class="helptext">&mdash; kinase sequence</span></label>
+          <textarea placeholder="e.g. MKTAYIAKQR&hellip;">MKTAYIAKQRQISFVKSHFSRQLEERLGLIEVQAPILSR&hellip;</textarea>
+          <div class="example-row">
+            <div class="chip">ABL1 (leukemia)</div>
+            <div class="chip">EGFR (lung cancer)</div>
+            <div class="chip">Paste my own &hellip;</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Model</label>
+          <div class="model-select">
+            <div class="model-opt selected"><div class="mname">Random Forest</div><div class="mnote">balanced, fast</div></div>
+            <div class="model-opt"><div class="mname">XGBoost</div><div class="mnote">highest accuracy</div></div>
+            <div class="model-opt"><div class="mname">SVR</div><div class="mnote">smooth estimates</div></div>
+            <div class="model-opt"><div class="mname">Gaussian Process</div><div class="mnote">gives confidence range</div></div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;" onclick="goTo('results')">Predict binding affinity &rarr;</button>
+        <div class="mini-note">
+          <span>&#9432;</span>
+          <span>This model was trained on the KIBA benchmark dataset (~118K measured drug&ndash;kinase pairs) and tested on kinases and drugs it never saw during training.</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 style="font-size:15px; margin-bottom:14px;">What happens after you click predict</h3>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; gap:12px;"><div class="mono" style="color:var(--amber-deep); font-weight:600;">1</div><div style="font-size:13.5px;">Your SMILES and sequence are converted into the same numeric features the model was trained on.</div></div>
+          <div style="display:flex; gap:12px;"><div class="mono" style="color:var(--amber-deep); font-weight:600;">2</div><div style="font-size:13.5px;">The selected model estimates a KIBA affinity score for this exact pair.</div></div>
+          <div style="display:flex; gap:12px;"><div class="mono" style="color:var(--amber-deep); font-weight:600;">3</div><div style="font-size:13.5px;">SHAP identifies which specific features drove that score up or down.</div></div>
+          <div style="display:flex; gap:12px;"><div class="mono" style="color:var(--amber-deep); font-weight:600;">4</div><div style="font-size:13.5px;">You get a plain-language readout &mdash; not just a raw number.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= RESULTS ================= -->
+  <div class="page" id="results">
+    <section style="margin-top:40px;">
+      <div class="eyebrow">Sample output</div>
+      <h2 style="font-size:28px;">Aspirin &times; ABL1 &mdash; prediction</h2>
+      <p class="lede">This is what a finished prediction looks like: the score, what it means in plain terms, and why the model reached it.</p>
+    </section>
+
+    <div class="dock-scene">
+      <div id="dockCaption" style="text-align:center; font-family:'IBM Plex Mono'; font-size:11.5px; color:var(--teal-deep); font-weight:500; letter-spacing:0.03em; height:16px; margin-bottom:4px;">Approaching ABL1&hellip;</div>
+      <svg viewBox="0 0 380 140" style="width:100%; max-width:420px; display:block; margin:0 auto;">
+        <!-- socket piece (protein pocket) -->
+        <g transform="translate(232,38)">
+          <path d="M60,0 L0,0 L0,18 C10,18 10,34 0,34 L0,62 L60,62 Z"
+                fill="#FCEFDD" stroke="#DE9A34" stroke-width="2" stroke-linejoin="round"/>
+          <!-- ribbon texture = protein -->
+          <path d="M14,10 q8,6 16,0 q8,-6 16,0" stroke="#B87A1F" stroke-width="1.4" fill="none" opacity="0.55"/>
+          <path d="M14,25 q8,6 16,0 q8,-6 16,0" stroke="#B87A1F" stroke-width="1.4" fill="none" opacity="0.55"/>
+          <path d="M14,50 q8,6 16,0 q8,-6 16,0" stroke="#B87A1F" stroke-width="1.4" fill="none" opacity="0.55"/>
+        </g>
+        <text x="262" y="122" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#5B655F">ABL1 binding pocket</text>
+
+        <circle class="dock-pulse" id="dockPulse" cx="238" cy="69" r="9" fill="none" stroke="#1F6F63" stroke-width="2" style="opacity:0;"/>
+
+        <!-- drug piece (puzzle knob, molecule texture inside) -->
+        <g transform="translate(120,38)">
+        <g class="dock-molecule" id="dockMol">
+          <path d="M0,0 L60,0 L60,18 C70,18 70,34 60,34 L60,62 L0,62 Z"
+                fill="#1F6F63" stroke="#0F4A41" stroke-width="2" stroke-linejoin="round"/>
+          <!-- skeletal ring = molecule -->
+          <polygon points="18,20 28,15 38,20 38,32 28,37 18,32" fill="none" stroke="#CDEBE1" stroke-width="1.6"/>
+          <line x1="28" y1="15" x2="28" y2="6" stroke="#CDEBE1" stroke-width="1.6"/>
+          <line x1="38" y1="20" x2="47" y2="15" stroke="#CDEBE1" stroke-width="1.6"/>
+        </g>
+        </g>
+        <text x="150" y="122" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#5B655F">aspirin</text>
+      </svg>
+      <button class="btn btn-ghost" style="font-size:12px; padding:7px 14px; display:block; margin:0 auto 14px;" onclick="runDockSequence()">&#8635; Replay docking</button>
+    </div>
+
+    <div class="gauge-wrap" style="margin-top:16px;">
+      <div class="gauge-top">
+        <div>
+          <div class="gauge-score" id="gaugeScoreText">12.4 <span style="font-size:15px; color:var(--graphite); font-weight:500;">predicted KIBA score</span></div>
+        </div>
+        <div class="gauge-label">Moderate predicted binding</div>
+      </div>
+      <div class="gauge-track">
+        <div class="gauge-marker" id="gaugeMarker" style="left:0%;"></div>
+      </div>
+      <div class="gauge-scale"><span>Weak</span><span>Moderate</span><span>Strong</span></div>
+      <p style="font-size:13px; color:var(--graphite); margin-top:16px;">Moderate interaction &mdash; weaker than known ABL1 inhibitors like Imatinib, since aspirin wasn't built for this target.</p>
+    </div>
+
+    <section>
+      <div class="eyebrow">Why the model said this</div>
+      <div class="reason-list">
+        <div class="reason"><div class="bar pos"></div><div class="rtext"><b>+0.9&nbsp;&nbsp;Aromatic ring count</b><span>The molecule's ring structure resembles known kinase-binding scaffolds &mdash; pushed the score up.</span></div></div>
+        <div class="reason"><div class="bar neg"></div><div class="rtext"><b>&minus;1.3&nbsp;&nbsp;Molecular weight</b><span>Aspirin is much smaller than typical kinase inhibitors, which usually need more surface area to bind well &mdash; pulled the score down.</span></div></div>
+        <div class="reason"><div class="bar neg"></div><div class="rtext"><b>&minus;0.6&nbsp;&nbsp;Hinge-region compatibility</b><span>Low similarity to the ATP-binding hinge motif ABL1 inhibitors typically target &mdash; pulled the score down.</span></div></div>
+        <div class="reason"><div class="bar pos"></div><div class="rtext"><b>+0.4&nbsp;&nbsp;Hydrogen bond donors</b><span>A small favorable contribution from the molecule's polar groups.</span></div></div>
+      </div>
+    </section>
+
+    <div class="mini-note" style="margin-top:20px;">
+      <span>&#9432;</span>
+      <span>Reasons are generated using SHAP values mapped back to human-readable feature names &mdash; not raw model internals.</span>
+    </div>
+  </div>
+
+  <!-- ================= SCIENCE ================= -->
+  <div class="page" id="science">
+    <section style="margin-top:40px;">
+      <div class="eyebrow">For evaluators &amp; the curious</div>
+      <h2 style="font-size:28px;">How the models actually compare</h2>
+      <p class="lede">Full results across all four algorithms, reported honestly across three evaluation splits.</p>
+    </section>
+
+    <table>
+      <thead><tr><th>Algorithm</th><th>Split</th><th>RMSE &darr;</th><th>Concordance Index &uarr;</th><th>Pearson r &uarr;</th></tr></thead>
+      <tbody>
+        <tr><td>Random Forest</td><td><span class="split-tag">random</span></td><td>0.163</td><td>0.871</td><td>0.842</td></tr>
+        <tr><td>Random Forest</td><td><span class="split-tag">cold-drug</span></td><td>0.241</td><td>0.779</td><td>0.701</td></tr>
+        <tr><td>XGBoost</td><td><span class="split-tag">random</span></td><td class="best">0.151</td><td class="best">0.884</td><td class="best">0.859</td></tr>
+        <tr><td>XGBoost</td><td><span class="split-tag">cold-drug</span></td><td>0.229</td><td>0.791</td><td>0.718</td></tr>
+        <tr><td>SVR (RBF)</td><td><span class="split-tag">random</span></td><td>0.178</td><td>0.852</td><td>0.811</td></tr>
+        <tr><td>Gaussian Process</td><td><span class="split-tag">cold-protein</span></td><td>0.255</td><td>0.762</td><td>0.688</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px; color:var(--graphite); margin-top:10px;">Illustrative placeholder values &mdash; swap in your actual results table here.</p>
+
+    <section>
+      <div class="eyebrow">The honest headline</div>
+      <div class="card" style="max-width:640px;">
+        <h3>Every model gets worse on cold splits &mdash; and that's the finding, not a flaw</h3>
+        <p>All four algorithms score noticeably lower once drug or protein overlap is removed between train and test. That gap is the real story: it shows how much of a "good-looking" result on a random split was actually just memorized similarity, not genuine generalization.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= ABOUT ================= -->
+  <div class="page" id="about">
+    <section style="margin-top:40px;">
+      <div class="eyebrow">VTU Major Project</div>
+      <h2 style="font-size:28px;">About this project</h2>
+      <p class="lede">DTI&ndash;ML predicts kinase drug&ndash;target binding affinity using classical machine learning, evaluated under a cold-split protocol and explained with SHAP feature attribution, built on the public KIBA benchmark.</p>
+    </section>
+
+    <div class="team-grid">
+      <div class="member"><div class="avatar">A</div><h3>Data &amp; Drug Features</h3><p>Dataset cleaning, split design, fingerprint &amp; descriptor pipeline.</p></div>
+      <div class="member"><div class="avatar">B</div><h3>Protein Features &amp; Models</h3><p>Protein feature pipeline, training and tuning all four algorithms.</p></div>
+      <div class="member"><div class="avatar">C</div><h3>Evaluation &amp; Interpretability</h3><p>Metrics, SHAP analysis, pharmacophore sanity checks.</p></div>
+      <div class="member"><div class="avatar">D</div><h3>App &amp; Paper</h3><p>Web app build, IEEE paper compilation, presentation.</p></div>
+    </div>
+
+    <section>
+      <div class="eyebrow">References this project builds on</div>
+      <p class="lede" style="max-width:720px;">Positioned against DeepDTA, GraphDTA, KronRLS, and SimBoost &mdash; comparing classical, feature-engineered ML against deep-learning DTI approaches on the same benchmark.</p>
+    </section>
+  </div>
+
+</main>
+
+<footer>DTI&ndash;ML &middot; VTU Major Project &middot; mockup for design review &mdash; not the production app</footer>
+
+<button class="chat-launcher" onclick="toggleChat()">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <div><h4>Ask about this result</h4><span>scripted demo &middot; not a live model</span></div>
+    <div class="chat-close" onclick="toggleChat()">&times;</div>
+  </div>
+  <div class="chat-body" id="chatBody">
+    <div class="chat-msg bot">Hi &mdash; I can explain any term or number on this page in plain English. Tap a question below, or in the real version, type your own.</div>
+  </div>
+  <div class="chat-suggest" id="chatSuggest">
+    <div class="chip" onclick="askBot('score')">What does 12.4 mean?</div>
+    <div class="chip" onclick="askBot('cold')">Why lower on cold split?</div>
+    <div class="chip" onclick="askBot('shap')">Explain SHAP simply</div>
+  </div>
+</div>
+
+<script>
+  const answers = {
+    score: "12.4 is on the model's affinity scale, where higher means a tighter, more drug-like fit. 12.4 lands in the 'moderate' band &mdash; real, but not a strong candidate compared to purpose-built inhibitors.",
+    cold: "On a normal split, the model can partly recognise similar molecules it already saw. A cold split removes that overlap, so the score you see reflects genuine generalisation, not memorisation &mdash; which is why it's usually a bit lower, and more trustworthy.",
+    shap: "SHAP looks at each input feature (like ring count or molecular weight) and measures how much it pushed the final score up or down. It's the model showing its working, feature by feature, instead of just handing you a number."
+  };
+  function toggleChat(){ document.getElementById('chatPanel').classList.toggle('open'); }
+  function askBot(key){
+    const body = document.getElementById('chatBody');
+    const userMsg = document.createElement('div');
+    userMsg.className = 'chat-msg user';
+    userMsg.textContent = document.querySelector(`[onclick="askBot('${key}')"]`).textContent;
+    body.appendChild(userMsg);
+    const typing = document.createElement('div');
+    typing.className = 'chat-typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    body.appendChild(typing);
+    body.scrollTop = body.scrollHeight;
+    setTimeout(() => {
+      typing.remove();
+      const bot = document.createElement('div');
+      bot.className = 'chat-msg bot';
+      bot.textContent = answers[key];
+      body.appendChild(bot);
+      body.scrollTop = body.scrollHeight;
+    }, 700);
+  }
+  function runDockSequence(){
+    const mol = document.getElementById('dockMol');
+    const caption = document.getElementById('dockCaption');
+    const pulse = document.getElementById('dockPulse');
+    mol.classList.add('replay');
+    pulse.style.opacity = '0';
+    void mol.offsetWidth;
+    mol.classList.remove('replay');
+    caption.textContent = 'Approaching ABL1…';
+    caption.style.color = 'var(--teal-deep)';
+    setTimeout(() => { caption.textContent = 'Testing the fit…'; }, 650);
+    setTimeout(() => { caption.textContent = 'Bound — moderate affinity'; caption.style.color = 'var(--amber-deep)'; }, 1150);
+  }
+</script>
+
+<script>
+  const links = document.querySelectorAll('.navlink');
+  const pages = document.querySelectorAll('.page');
+  function goTo(id){
+    pages.forEach(p => p.classList.toggle('active', p.id === id));
+    links.forEach(l => l.classList.toggle('active', l.dataset.page === id));
+    window.scrollTo({top:0, behavior:'smooth'});
+    if(id === 'results'){
+      const marker = document.getElementById('gaugeMarker');
+      marker.style.left = '0%';
+      requestAnimationFrame(() => requestAnimationFrame(() => { marker.style.left = '52%'; }));
+      if (typeof runDockSequence === 'function') setTimeout(runDockSequence, 50);
+    }
+  }
+  links.forEach(l => l.addEventListener('click', () => goTo(l.dataset.page)));
+
+  document.querySelectorAll('.model-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.model-opt').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+    });
+  });
+</script>
+
+</body>
+</html>

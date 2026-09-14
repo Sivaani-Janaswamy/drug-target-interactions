@@ -130,7 +130,17 @@ Kinases are one of the most drug-relevant protein families (cancer, inflammatory
 | Web app running behind | Streamlit over Flask — much faster to get working, still looks polished |
 | SHAP computation slow for tree ensembles on full test set | Use `TreeExplainer` (fast, exact for RF/XGBoost) and compute SHAP only on the 3–5 showcase examples + a small validation subset |
 
-## 11. Deliverables Checklist
+## 11. Planned: Chatbot Feature
+
+A future add-on will embed a scoped Q&A chatbot (Google Gemini Flash free tier) in the
+web app so users can ask plain-language questions about the current prediction (score
+meaning, cold-split rationale, SHAP interpretation) without leaving the page. It's
+grounded to the current prediction's context, guarded against off-topic/medical-advice
+questions, and rate-limited to protect the free API quota. See
+[CHATBOT_SPEC.md](CHATBOT_SPEC.md) for the full architecture and contract — not yet
+implemented.
+
+## 12. Deliverables Checklist
 
 - [ ] Cleaned dataset + 3 split versions (random, cold-drug, cold-protein)
 - [ ] Drug feature pipeline (fingerprints + descriptors)
