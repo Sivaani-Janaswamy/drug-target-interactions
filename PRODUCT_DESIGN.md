@@ -2,7 +2,7 @@
 
 **Status:** Approved for implementation
 **Product:** DTI-ML Drug-Target Binding Predictor
-**Authoritative visual reference:** [`dti-ml-frontend-mockup.html`](dti-ml-frontend-mockup.html)
+**Authoritative visual reference:** [`design-reference.html`](design-reference.html)
 **Frontend direction:** React
 **Backend direction:** Python API serving the existing ML pipeline
 **Date:** 2026-09-14
@@ -51,7 +51,7 @@ The existing Python feature extraction, model loading, prediction, SHAP, benchma
 ## 3. Authority Rules
 
 1. This document defines the production design requirements.
-2. [`dti-ml-frontend-mockup.html`](dti-ml-frontend-mockup.html) is the pixel and interaction reference.
+2. [`design-reference.html`](design-reference.html) is the pixel and interaction reference.
 3. The React implementation must follow the mockup unless a change is explicitly recorded in this document.
 4. Backend limitations must not silently change the design. If a backend value is unavailable, the frontend must show a defined loading, unavailable, or error state that preserves the mockup structure.
 5. Streamlit-specific layouts, widgets, sidebars, rerun behavior, and generated markup must not be copied into the React product when they conflict with the mockup.
@@ -481,7 +481,7 @@ The exact numeric values will come from the selected model. The response shape m
 ### Design contract
 
 - [x] Add this document to the repository
-- [x] Treat `dti-ml-frontend-mockup.html` as the authoritative visual reference
+- [x] Treat `design-reference.html` as the authoritative visual reference
 - [x] Record any intentional deviation in this document before implementation
 - [x] Confirm the final product uses the six mockup pages and no Streamlit sidebar
 
@@ -574,7 +574,18 @@ The remaining content-parity work is visual copy review against the mockup. The 
 - [x] Update README startup and deployment instructions
 - [x] Update paper and project documentation to describe the final React/API architecture
 
-## 19. Current Status and Remaining Work
+## 19. Active Documentation Structure
+
+The active project documentation is intentionally small:
+
+- `README.md`: setup, architecture, commands, and deployment.
+- `CONTRIBUTING.md`: module ownership, extension rules, and validation workflow.
+- `PRODUCT_DESIGN.md`: product behavior, visual requirements, and design authority.
+- `paper/manuscript.md`: academic manuscript, kept separate from engineering documentation.
+
+Historical planning and superseded specifications are preserved under `docs/archive/` and are not active implementation instructions.
+
+## 20. Current Status and Remaining Work
 
 ### Completed foundation
 
@@ -612,7 +623,7 @@ These items are the remaining work before calling the migration production-ready
 - The backend now returns optional Morgan-bit atom-environment metadata. The UI retains the textual SHAP fallback; full highlighted molecule rendering remains partial.
 - Automated browser screenshots remain incomplete because the local Playwright browser binary was unavailable. This is a verification gap, not an approved visual deviation.
 
-## 20. Maintainability Rules
+## 21. Maintainability Rules
 
 The production code must remain modular and easy to change:
 
@@ -678,18 +689,18 @@ Rules:
 - Record intentional visual or content deviations in this document before merging them.
 - Run the backend smoke tests and frontend production build before considering a change complete.
 
-## 21. Polishing Prompt
+## 22. Polishing Prompt
 
 Use the following prompt for the remaining release-hardening pass:
 
 ```text
 Polish and production-harden the completed React/FastAPI DTI-ML migration without changing the approved product design.
 
-Read PRODUCT_DESIGN_SOURCE_OF_TRUTH.md and dti-ml-frontend-mockup.html first. Treat both as authoritative. Do not redesign the app, add new pages, restore Streamlit, change the color palette, or replace the mockup with a generic dashboard.
+Read PRODUCT_DESIGN.md and design-reference.html first. Treat both as authoritative. Do not redesign the app, add new pages, restore Streamlit, change the color palette, or replace the reference with a generic dashboard.
 
 Focus only on the documented remaining work:
 
-1. Refactor frontend/src/main.jsx into the modular structure defined in PRODUCT_DESIGN_SOURCE_OF_TRUTH.md. Keep behavior and visual output unchanged.
+1. Refactor frontend/src/main.jsx into the modular structure defined in PRODUCT_DESIGN.md. Keep behavior and visual output unchanged.
 2. Extract API calls, types, model metadata, page content, shared components, and CSS layers into focused modules.
 3. Keep backend/main.py thin and preserve the current backend service boundaries.
 4. Add focused backend tests for health, presets, benchmarks, valid prediction, invalid SMILES, invalid protein sequence, unsupported model, and chatbot fallback/cache behavior.
@@ -710,7 +721,7 @@ Validation required before finishing:
 Report completed polish items, remaining limitations, exact validation results, and any intentional deviation from the mockup.
 ```
 
-## 22. Definition of Done
+## 23. Definition of Done
 
 The migration is complete only when:
 

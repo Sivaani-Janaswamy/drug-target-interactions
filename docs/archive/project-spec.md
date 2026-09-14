@@ -88,7 +88,7 @@ Kinases are one of the most drug-relevant protein families (cancer, inflammatory
 - Evaluation metrics + cold-split result tables across all algorithms
 - SHAP interpretability analysis + pharmacophore sanity-check on 3–5 examples
 - React/FastAPI demo app (SMILES + protein sequence in → affinity + SHAP visualization out)
-- IEEE paper drafting lead (compiles all members' results into paper sections; writing still split evenly — see plan.md)
+- IEEE paper drafting lead (compiles all members' results into paper sections; writing still split evenly — see `docs/archive/project-plan.md`)
 
 ## 7. Evaluation Metrics
 
@@ -137,8 +137,7 @@ web app so users can ask plain-language questions about the current prediction (
 meaning, cold-split rationale, SHAP interpretation) without leaving the page. It's
 grounded to the current prediction's context, guarded against off-topic/medical-advice
 questions, and rate-limited to protect the free API quota. See
-[CHATBOT_SPEC.md](CHATBOT_SPEC.md) for the full architecture and contract — not yet
-implemented.
+The former chatbot architecture notes are preserved in `docs/archive/chatbot-spec.md`.
 
 ## 12. Deliverables Checklist
 
