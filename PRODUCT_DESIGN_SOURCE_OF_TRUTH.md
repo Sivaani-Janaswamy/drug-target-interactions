@@ -480,10 +480,10 @@ The exact numeric values will come from the selected model. The response shape m
 
 ### Design contract
 
-- [ ] Add this document to the repository
-- [ ] Treat `dti-ml-frontend-mockup.html` as the authoritative visual reference
-- [ ] Record any intentional deviation in this document before implementation
-- [ ] Confirm the final product uses the six mockup pages and no Streamlit sidebar
+- [x] Add this document to the repository
+- [x] Treat `dti-ml-frontend-mockup.html` as the authoritative visual reference
+- [x] Record any intentional deviation in this document before implementation
+- [x] Confirm the final product uses the six mockup pages and no Streamlit sidebar
 
 ### Backend extraction
 
@@ -537,10 +537,12 @@ The exact numeric values will come from the selected model. The response shape m
 - [ ] Match all mockup button labels
 - [ ] Match all mockup explanatory copy unless a factual correction is approved
 - [ ] Match all model names consistently across frontend, API, and saved results
-- [ ] Match preset names to separate drug and target metadata
-- [ ] Replace mockup placeholder benchmark values with actual verified results
-- [ ] Replace raw SHAP-only labels with user-readable descriptions
-- [ ] Ensure the result heading uses the actual selected drug and target
+- [x] Match preset names to separate drug and target metadata
+- [x] Replace mockup placeholder benchmark values with actual verified results
+- [x] Replace raw SHAP-only labels with user-readable descriptions
+- [x] Ensure the result heading uses the actual selected drug and target
+
+The remaining content-parity work is visual copy review against the mockup. The functional data contract is implemented, but final copy parity still requires screenshot/manual review.
 
 ### Visual and behavior verification
 
@@ -568,11 +570,147 @@ The exact numeric values will come from the selected model. The response shape m
 
 - [x] Remove Streamlit from the production application
 - [x] Document React and FastAPI as the final application architecture
-- [ ] Remove any remaining Streamlit references from generated documentation
-- [ ] Update README startup and deployment instructions
-- [ ] Update paper and project documentation to describe the final React/API architecture
+- [x] Remove any remaining Streamlit references from generated documentation
+- [x] Update README startup and deployment instructions
+- [x] Update paper and project documentation to describe the final React/API architecture
 
-## 19. Definition of Done
+## 19. Current Status and Remaining Work
+
+### Completed foundation
+
+- React/Vite frontend exists and builds successfully.
+- FastAPI backend exposes health, presets, benchmarks, prediction, and chatbot routes.
+- Existing model checkpoints, feature extraction, and SHAP utilities are reused.
+- Streamlit production code and dependency have been removed.
+- Real API smoke tests pass for health, presets, benchmarks, invalid input, chatbot cache answers, and a real Aspirin/ABL1 prediction.
+- README, project specification, chatbot specification, paper, and this design contract describe the React/FastAPI architecture.
+- Frontend `npm ci`, Vitest tests, and Vite production build pass.
+- Backend `pytest` passes all 9 API tests.
+- `requirements-lock.txt` and `frontend/package-lock.json` are present and documented.
+- Backend/frontend environment examples and manual deployment commands are documented.
+- Optional Morgan-bit atom-environment metadata is returned for supported fingerprint features.
+
+### Remaining release work
+
+These items are the remaining work before calling the migration production-ready:
+
+- Perform screenshot comparison against the mockup at 1440 × 900, 1280 × 800, 768 × 1024, and 390 × 844.
+- Verify every page's exact copy, spacing, responsive wrapping, and active navigation state.
+- Complete browser interaction testing for presets, model cards, prediction, result animation, replay, table rendering, chat, and error states.
+- [x] Split the large React entrypoint into maintainable page and component modules.
+- [x] Move API calls, constants, and content data out of the main UI module.
+- [x] Add automated backend tests and frontend interaction tests.
+- [x] Add a production configuration for API origin instead of relying only on a local default.
+- [x] Add deployment instructions for the API and frontend.
+- [x] Add frontend and Python lockfiles for reproducible installs.
+- [x] Remove generated frontend artifacts from tracked source if they are not intentionally deployed.
+- [x] Recheck all documentation for stale architecture claims after the modularization pass.
+
+### Known intentional implementation differences
+
+- The frontend now uses page, component, content, API, and app-shell modules. Shared TypeScript-style runtime shapes are documented by the API schemas; a separate `types.js` file is not required for the current JavaScript build.
+- The backend now returns optional Morgan-bit atom-environment metadata. The UI retains the textual SHAP fallback; full highlighted molecule rendering remains partial.
+- Automated browser screenshots remain incomplete because the local Playwright browser binary was unavailable. This is a verification gap, not an approved visual deviation.
+
+## 20. Maintainability Rules
+
+The production code must remain modular and easy to change:
+
+### Frontend module boundaries
+
+The current production structure is:
+
+```text
+frontend/src/
+  app/
+    App.jsx
+    api.js
+    constants.js
+  components/
+    BrandMark.jsx
+    Header.jsx
+    ChatWidget.jsx
+    HeroVisual.jsx
+    DockingScene.jsx
+    ResultGauge.jsx
+    FeatureReasons.jsx
+    BenchmarkTable.jsx
+  pages/
+    HomePage.jsx
+    HowItWorksPage.jsx
+    PredictorPage.jsx
+    ResultPage.jsx
+    SciencePage.jsx
+    AboutPage.jsx
+  content/
+    copy.js
+  testSetup.js
+  app/App.test.jsx
+  main.jsx
+  styles.css
+```
+
+Rules:
+
+- Pages compose components; they should not contain API implementation details.
+- `api.js` owns fetch calls, error normalization, and the API base URL.
+- Shared response/request shapes belong in `types.js` or a documented schema module.
+- Repeated copy and model metadata belong in content/constants modules.
+- Animation components own their animation state and replay behavior.
+- CSS variables remain centralized; do not introduce duplicate color values casually.
+- Do not duplicate ML logic in React.
+- Do not make visual components depend on Streamlit or backend internals.
+
+### Backend module boundaries
+
+- `backend/main.py` owns routing and middleware only.
+- `backend/schemas.py` owns request and response validation.
+- `backend/prediction_service.py` owns model inference and prediction shaping.
+- `backend/chat_service.py` owns chatbot guardrails, rate limiting, and provider calls.
+- Reusable scientific logic remains in `features/`, `evaluation/`, and `app/helpers.py`.
+- Route handlers should remain thin and should not contain feature extraction algorithms.
+
+### Change discipline
+
+- Preserve the mockup and this document as the design authority.
+- Make visual changes in the relevant component/style module, not by adding one-off inline overrides.
+- Add or update a focused test when changing API response shapes, validation, navigation, or prediction behavior.
+- Record intentional visual or content deviations in this document before merging them.
+- Run the backend smoke tests and frontend production build before considering a change complete.
+
+## 21. Polishing Prompt
+
+Use the following prompt for the remaining release-hardening pass:
+
+```text
+Polish and production-harden the completed React/FastAPI DTI-ML migration without changing the approved product design.
+
+Read PRODUCT_DESIGN_SOURCE_OF_TRUTH.md and dti-ml-frontend-mockup.html first. Treat both as authoritative. Do not redesign the app, add new pages, restore Streamlit, change the color palette, or replace the mockup with a generic dashboard.
+
+Focus only on the documented remaining work:
+
+1. Refactor frontend/src/main.jsx into the modular structure defined in PRODUCT_DESIGN_SOURCE_OF_TRUTH.md. Keep behavior and visual output unchanged.
+2. Extract API calls, types, model metadata, page content, shared components, and CSS layers into focused modules.
+3. Keep backend/main.py thin and preserve the current backend service boundaries.
+4. Add focused backend tests for health, presets, benchmarks, valid prediction, invalid SMILES, invalid protein sequence, unsupported model, and chatbot fallback/cache behavior.
+5. Add focused frontend tests or browser checks for navigation, preset chips, model cards, validation, prediction loading/success/error, result gauge, docking replay, science table, and chat.
+6. Compare the frontend to the mockup at 1440x900, 1280x800, 768x1024, and 390x844. Fix only concrete parity issues in spacing, typography, content, responsive layout, overflow, focus states, or animation behavior.
+7. Verify reduced-motion behavior, keyboard access, semantic labels, and visible focus states.
+8. Replace local-only assumptions with documented environment configuration for the API URL and deployment.
+9. Add or update lockfiles and startup documentation as needed for reproducible local setup.
+10. Do not remove reusable ML code or alter model semantics. Do not create a commit.
+
+Validation required before finishing:
+- backend Python compilation/tests
+- frontend npm build
+- API smoke tests
+- browser interaction checks if the browser tool is available
+- git diff --check
+
+Report completed polish items, remaining limitations, exact validation results, and any intentional deviation from the mockup.
+```
+
+## 22. Definition of Done
 
 The migration is complete only when:
 

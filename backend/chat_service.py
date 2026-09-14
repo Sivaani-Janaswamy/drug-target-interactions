@@ -6,6 +6,8 @@ from collections import defaultdict, deque
 from threading import Lock
 from typing import Any
 
+from backend.config import get_settings
+
 SYSTEM_PROMPT = """You are the assistant embedded in DTI-ML, a student project that predicts kinase drug-target binding affinity using classical ML. Only answer questions about kinases, binding affinity, cold-split evaluation, SHAP interpretability, the four ML models used, and the current prediction result. Refuse unrelated questions and medical advice. Never invent numbers. Keep every answer under 4 sentences in plain language."""
 REFUSAL = "I can only help with questions about this DTI-ML project and its predictions."
 FALLBACK = "I couldn't reach the explanation service just now — try again in a moment."
@@ -60,7 +62,7 @@ def get_chat_answer(question: str, context: dict[str, Any], client_id: str = "an
     if cached:
         return cached
 
-    api_key = __import__("os").environ.get("GEMINI_API_KEY")
+    api_key = get_settings().gemini_api_key
     if not api_key:
         return FALLBACK
 

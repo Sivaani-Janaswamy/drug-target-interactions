@@ -4,13 +4,15 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.chat_service import get_chat_answer
+from backend.config import get_settings
 from backend.prediction_service import get_api_benchmarks, get_api_presets, predict_binding
 from backend.schemas import ChatRequest, ChatResponse, ErrorResponse, PredictionRequest, PredictionResponse
 
-app = FastAPI(title="DTI-ML API", version="1.0.0")
+settings = get_settings()
+app = FastAPI(title="DTI-ML API", version=settings.api_version)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=list(settings.allowed_origins),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -19,7 +21,7 @@ app.add_middleware(
 
 @app.get("/api/health")
 def health() -> dict[str, str]:
-    return {"status": "ok", "service": "dti-ml-api"}
+    return {"status": "ok", "service": "dti-ml-api", "version": settings.api_version}
 
 
 @app.get("/api/presets")

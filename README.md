@@ -142,18 +142,54 @@ Train the benchmark regressors and tune hyper-parameters on the splits. Checkpoi
 ### Step 4: Launch the API
 Run the FastAPI backend locally:
 ```bash
-uvicorn backend.main:app --reload
+python -m uvicorn backend.main:app --reload
 ```
 
 ### Step 5: Launch the React frontend
 In a second terminal:
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-The frontend runs at `http://localhost:5173` and calls the API at `http://127.0.0.1:8000` by default. Set `VITE_API_BASE` when the API is hosted elsewhere.
+The frontend runs at `http://localhost:5173` and calls the API at `http://127.0.0.1:8000` by default. Copy `frontend/.env.example` to `frontend/.env` and set `VITE_API_BASE` when the API is hosted elsewhere.
+
+### Tests and production build
+
+```bash
+# From the repository root
+python -m pytest -q
+python -m compileall backend app/helpers.py features evaluation
+
+# From frontend/
+npm ci
+npm test -- --run
+npm run build
+npm run preview
+```
+
+### Production configuration
+
+Copy `.env.example` to `.env` for backend settings and `frontend/.env.example` to `frontend/.env` for the browser API URL.
+
+- `DTI_ALLOWED_ORIGINS`: comma-separated browser origins allowed by the API.
+- `DTI_MODELS_DIR`: absolute or repository-relative model checkpoint directory.
+- `DTI_API_VERSION`: API version returned by `/api/health`.
+- `GEMINI_API_KEY`: optional key for non-cached chatbot questions; never commit it.
+- `VITE_API_BASE`: API base URL baked into the frontend build.
+
+For a production API process:
+
+```bash
+python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000
+```
+
+For a production frontend, build with `npm run build` and serve `frontend/dist` from a static host or reverse proxy. The API and frontend origins must be listed in `DTI_ALLOWED_ORIGINS`. Model checkpoint files must be available at `DTI_MODELS_DIR`; they are intentionally ignored by Git and must be provisioned separately.
+
+`frontend/package-lock.json` is the JavaScript lockfile. `requirements-lock.txt` records the Python virtual environment used for validation. Regenerate it after intentional dependency changes with `python -m pip install -r requirements.txt` followed by `python -m pip freeze > requirements-lock.txt`.
+
+Deployment is intentionally manual at this stage: the repository provides startup commands and configuration contracts but does not include a hosted environment or CI/CD deployment pipeline.
 
 ---
 

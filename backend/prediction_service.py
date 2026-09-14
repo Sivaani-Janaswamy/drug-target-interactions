@@ -7,16 +7,18 @@ from typing import Any
 import numpy as np
 
 from app.helpers import get_benchmark_results_data, get_preset_examples, interpret_affinity_score, load_model_checkpoint
+from backend.config import get_settings
 from evaluation.shap_utils import compute_shap_attributions, get_top_feature_attributions
 from features.featurizer import (
     compute_drug_features,
     get_drug_feature_names,
     get_protein_feature_names,
     featurize_single_pair,
+    get_morgan_bit_context,
 )
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
-MODELS_DIR = ROOT_DIR / "models"
+MODELS_DIR = get_settings().models_dir
 SUPPORTED_MODELS = (
     "Random Forest",
     "XGBoost",
@@ -113,6 +115,7 @@ def predict_binding(
     shap_values = compute_shap_attributions(model, features)
     top_features = get_top_feature_attributions(feature_names, shap_values[0], top_k=4)
 
+    bit_context = get_morgan_bit_context(smiles, [row["Feature"] for row in top_features.to_dict("records")])
     feature_payload = []
     for row in top_features.to_dict("records"):
         value = float(row["SHAP Value"])
@@ -124,6 +127,7 @@ def predict_binding(
                 "value": value,
                 "direction": "positive" if value > 0 else "negative",
                 "explanation": _feature_explanation(human_name, value),
+                "chemical_context": bit_context.get(row["Feature"]),
             }
         )
 

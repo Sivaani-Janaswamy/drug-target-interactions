@@ -19,6 +19,7 @@ class FeatureResponse(BaseModel):
     value: float
     direction: Literal["positive", "negative"]
     explanation: str
+    chemical_context: dict[str, Any] | None = None
 
 
 class PredictionResponse(BaseModel):

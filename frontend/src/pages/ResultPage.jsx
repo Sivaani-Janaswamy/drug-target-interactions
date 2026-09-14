@@ -1,0 +1,5 @@
+import { ActionButton, Eyebrow, PageIntro } from '../components/PageIntro';
+import DockingScene from '../components/DockingScene';
+import ResultGauge from '../components/ResultGauge';
+import FeatureReasons from '../components/FeatureReasons';
+export default function ResultPage({ result, navigate }) { if(!result)return <div className="page active"><PageIntro eyebrow="Sample output" title="No prediction yet">Run a prediction on the “Try the predictor” page to see a live result here.</PageIntro><ActionButton onClick={()=>navigate('Try the predictor')}>Go to Try the predictor →</ActionButton></div>;return <div className="page active"><PageIntro eyebrow="Sample output" title={`${result.drug.name} × ${result.target.name} — prediction`}>This is what a finished prediction looks like: the score, what it means in plain terms, and why the model reached it.</PageIntro><DockingScene result={result}/><ResultGauge result={result}/>{result.uncertainty!==null&&<div className="uncertainty">GPR predictive uncertainty (std dev): ±{result.uncertainty.toFixed(3)}</div>}<FeatureReasons result={result}/></div>; }

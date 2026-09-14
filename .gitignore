@@ -24,6 +24,11 @@ models/**/*.pkl
 models/**/*.joblib
 logs/
 wandb/
+.pytest_cache/
+.coverage
+coverage/
+test-results/
+playwright-report/
 
 # Environment
 .env

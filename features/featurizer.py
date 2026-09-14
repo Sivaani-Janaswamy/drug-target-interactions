@@ -36,7 +36,6 @@ def compute_drug_features(smiles: str) -> Optional[np.ndarray]:
         mol = Chem.MolFromSmiles(smiles)
         if mol is None:
             return None
-            
         # 1. 1024-bit Morgan Fingerprint
         fp = AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, nBits=1024)
         fp_vec = np.array(fp, dtype=np.float32)
@@ -57,6 +56,36 @@ def compute_drug_features(smiles: str) -> Optional[np.ndarray]:
         # Fallback synthetic drug vector if rdkit is unavailable
         np.random.seed(abs(hash(smiles)) % 100000)
         return np.random.randn(1030).astype(np.float32)
+
+
+def get_morgan_bit_context(smiles: str, bit_names: List[str]) -> Dict[str, Dict[str, Any]]:
+    """Return atom-environment metadata for requested Morgan bits."""
+    try:
+        from rdkit import Chem
+        from rdkit.Chem import AllChem
+
+        molecule = Chem.MolFromSmiles(smiles)
+        if molecule is None:
+            return {}
+        bit_info: Dict[int, list[tuple[int, int]]] = {}
+        AllChem.GetMorganFingerprintAsBitVect(molecule, radius=2, nBits=1024, bitInfo=bit_info)
+        context: Dict[str, Dict[str, Any]] = {}
+        for bit_name in bit_names:
+            if not bit_name.startswith("Morgan_Bit_"):
+                continue
+            bit_id = int(bit_name.rsplit("_", 1)[-1])
+            matches = []
+            for atom_index, radius in bit_info.get(bit_id, []):
+                bond_indices = AllChem.FindAtomEnvironmentOfRadiusN(molecule, radius, atom_index)
+                atom_indices = {atom_index}
+                for bond_index in bond_indices:
+                    bond = molecule.GetBondWithIdx(bond_index)
+                    atom_indices.update((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()))
+                matches.append({"atom_indices": sorted(atom_indices), "radius": radius})
+            context[bit_name] = {"highlight_supported": bool(matches), "matches": matches}
+        return context
+    except Exception:
+        return {}
 
 
 def get_drug_feature_names() -> List[str]:

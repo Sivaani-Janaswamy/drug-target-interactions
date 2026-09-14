@@ -1,0 +1,2 @@
+import BrandMark from './BrandMark';
+export default function Header({ page, navigate, pages }) { return <header><div className="nav-wrap"><a className="brand" href="#home" onClick={(event) => { event.preventDefault(); navigate('Home'); }}><BrandMark/><div><div className="brand-text">DTI-ML</div><div className="brand-sub">binding affinity predictor</div></div></a><nav aria-label="Primary navigation">{pages.map((item) => <button className={`navlink ${page === item ? 'active' : ''}`} key={item} onClick={() => navigate(item)}>{item}</button>)}</nav></div></header>; }
