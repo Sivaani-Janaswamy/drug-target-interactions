@@ -46,3 +46,5 @@ frontend/dist/
 # OS
 .DS_Store
 Thumbs.db
+
+pandoc-3.6/
