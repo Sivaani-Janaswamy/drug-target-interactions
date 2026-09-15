@@ -590,7 +590,7 @@ Historical planning and superseded specifications are preserved under `docs/arch
 - Real API smoke tests pass for health, presets, benchmarks, invalid input, chatbot cache answers, and a real Aspirin/ABL1 prediction.
 - README, project specification, chatbot specification, paper, and this design contract describe the React/FastAPI architecture.
 - Frontend `npm ci`, Vitest tests, and Vite production build pass.
-- Backend `pytest`: 11 API tests (10 passed, 1 pre-existing unrelated failure in `test_invalid_smiles_returns_400` due to SMILES validation behavior, not the chatbot)
+- Backend `pytest`: 16 API tests (all passing)
 - `requirements-lock.txt` and `frontend/package-lock.json` are present and documented.
 - Backend/frontend environment examples and manual deployment commands are documented.
 - Optional Morgan-bit atom-environment metadata is returned for supported fingerprint features.

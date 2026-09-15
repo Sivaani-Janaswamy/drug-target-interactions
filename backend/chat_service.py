@@ -150,11 +150,12 @@ CACHE_ANSWERS = {
     "cold": "A cold split removes any drug/protein overlap between training and testing, so the score reflects genuine generalisation, not memorisation — which is why it's usually a bit lower, and more trustworthy.",
     "shap": "SHAP measures how much each input feature pushed the prediction up or down — it's the model showing its working, feature by feature.",
 }
+UNEVALUATED_DATASETS = {"davis", "bindingdb", "uniprot", "chembl", "pubchem", "drugbank"}
+MAX_MSGS_PER_SESSION = 18
+WINDOW_SECONDS = 3600
 
 _hits: dict[str, deque[float]] = defaultdict(deque)
 _hits_lock = Lock()
-MAX_MSGS_PER_SESSION = 18
-WINDOW_SECONDS = 3600
 
 
 def _check_rate_limit(client_id: str) -> bool:
@@ -167,6 +168,16 @@ def _check_rate_limit(client_id: str) -> bool:
             return False
         hits.append(now)
         return True
+
+
+def _check_unsupported_dataset(question: str) -> str | None:
+    """Return a message if the question asks about an unevaluated dataset, else None."""
+    question_lower = question.lower()
+    for dataset in UNEVALUATED_DATASETS:
+        if dataset in question_lower or f" {dataset} " in question_lower or question_lower.endswith(f" {dataset}"):
+            return (f"{dataset.capitalize()} has not been evaluated in the current project, "
+                    f"so I can't provide a project-specific {dataset} result.")
+    return None
 
 
 def _local_cache_lookup(question: str) -> str | None:
@@ -189,6 +200,10 @@ def get_chat_answer(question: str, context: dict[str, Any], client_id: str = "an
     cached = _local_cache_lookup(question)
     if cached:
         return {"answer": cached, "sources": []}
+
+    unsupported = _check_unsupported_dataset(question)
+    if unsupported:
+        return {"answer": unsupported, "sources": []}
 
     # Load project knowledge
     knowledge = _get_project_knowledge()

@@ -164,7 +164,8 @@ def get_preset_examples() -> Dict[str, Dict[str, str]]:
 def get_benchmark_results_data(models_dir: str = "./models") -> pd.DataFrame:
     """
     Returns benchmark results 12-cell matrix (4 Algos x 3 Splits).
-    Reads from models/results.csv if present, otherwise returns defaults.
+    Reads from models/results.csv if present, otherwise returns LEGACY SYNTHETIC defaults.
+    The synthetic fallback includes a 'Source' column marked as 'LEGACY SYNTHETIC'.
     """
     results_path = os.path.join(models_dir, "results.csv")
     if os.path.exists(results_path):
@@ -174,19 +175,17 @@ def get_benchmark_results_data(models_dir: str = "./models") -> pd.DataFrame:
             pass
             
     data = [
-        {"Split": "Random Split (Baseline)", "Algorithm": "Random Forest", "MSE": 0.215, "RMSE": 0.463, "Pearson r": 0.842, "CI": 0.785},
-        {"Split": "Random Split (Baseline)", "Algorithm": "XGBoost", "MSE": 0.188, "RMSE": 0.433, "Pearson r": 0.868, "CI": 0.812},
-        {"Split": "Random Split (Baseline)", "Algorithm": "Support Vector Regression (SVR)", "MSE": 0.245, "RMSE": 0.495, "Pearson r": 0.810, "CI": 0.758},
-        {"Split": "Random Split (Baseline)", "Algorithm": "Gaussian Process Regression (GPR)", "MSE": 0.230, "RMSE": 0.479, "Pearson r": 0.825, "CI": 0.771},
-        
-        {"Split": "Cold-Drug Split", "Algorithm": "Random Forest", "MSE": 0.380, "RMSE": 0.616, "Pearson r": 0.635, "CI": 0.665},
-        {"Split": "Cold-Drug Split", "Algorithm": "XGBoost", "MSE": 0.345, "RMSE": 0.587, "Pearson r": 0.668, "CI": 0.692},
-        {"Split": "Cold-Drug Split", "Algorithm": "Support Vector Regression (SVR)", "MSE": 0.412, "RMSE": 0.641, "Pearson r": 0.598, "CI": 0.630},
-        {"Split": "Cold-Drug Split", "Algorithm": "Gaussian Process Regression (GPR)", "MSE": 0.395, "RMSE": 0.628, "Pearson r": 0.612, "CI": 0.648},
-        
-        {"Split": "Cold-Protein Split", "Algorithm": "Random Forest", "MSE": 0.420, "RMSE": 0.648, "Pearson r": 0.590, "CI": 0.628},
-        {"Split": "Cold-Protein Split", "Algorithm": "XGBoost", "MSE": 0.390, "RMSE": 0.624, "Pearson r": 0.621, "CI": 0.654},
-        {"Split": "Cold-Protein Split", "Algorithm": "Support Vector Regression (SVR)", "MSE": 0.465, "RMSE": 0.681, "Pearson r": 0.542, "CI": 0.595},
-        {"Split": "Cold-Protein Split", "Algorithm": "Gaussian Process Regression (GPR)", "MSE": 0.440, "RMSE": 0.663, "Pearson r": 0.565, "CI": 0.610},
+        {"Split": "Random Split (Baseline)", "Algorithm": "Random Forest", "MSE": 0.215, "RMSE": 0.463, "Pearson r": 0.842, "CI": 0.785, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Random Split (Baseline)", "Algorithm": "XGBoost", "MSE": 0.188, "RMSE": 0.433, "Pearson r": 0.868, "CI": 0.812, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Random Split (Baseline)", "Algorithm": "Support Vector Regression (SVR)", "MSE": 0.245, "RMSE": 0.495, "Pearson r": 0.810, "CI": 0.758, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Random Split (Baseline)", "Algorithm": "Gaussian Process Regression (GPR)", "MSE": 0.230, "RMSE": 0.479, "Pearson r": 0.825, "CI": 0.771, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Cold-Drug Split", "Algorithm": "Random Forest", "MSE": 0.380, "RMSE": 0.616, "Pearson r": 0.635, "CI": 0.665, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Cold-Drug Split", "Algorithm": "XGBoost", "MSE": 0.345, "RMSE": 0.587, "Pearson r": 0.668, "CI": 0.692, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Cold-Drug Split", "Algorithm": "Support Vector Regression (SVR)", "MSE": 0.412, "RMSE": 0.641, "Pearson r": 0.598, "CI": 0.630, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Cold-Drug Split", "Algorithm": "Gaussian Process Regression (GPR)", "MSE": 0.395, "RMSE": 0.628, "Pearson r": 0.612, "CI": 0.648, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Cold-Protein Split", "Algorithm": "Random Forest", "MSE": 0.420, "RMSE": 0.648, "Pearson r": 0.590, "CI": 0.628, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Cold-Protein Split", "Algorithm": "XGBoost", "MSE": 0.390, "RMSE": 0.624, "Pearson r": 0.621, "CI": 0.654, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Cold-Protein Split", "Algorithm": "Support Vector Regression (SVR)", "MSE": 0.465, "RMSE": 0.681, "Pearson r": 0.542, "CI": 0.595, "Source": "LEGACY SYNTHETIC"},
+        {"Split": "Cold-Protein Split", "Algorithm": "Gaussian Process Regression (GPR)", "MSE": 0.440, "RMSE": 0.663, "Pearson r": 0.565, "CI": 0.610, "Source": "LEGACY SYNTHETIC"},
     ]
     return pd.DataFrame(data)
