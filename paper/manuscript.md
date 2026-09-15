@@ -89,6 +89,10 @@ Each protein sequence is featurized into a **197-dimensional** numeric vector co
 
 Drug and protein feature vectors are extracted independently using RDKit and the protein featurization pipeline described above, then concatenated into the final 1,227-dimensional representation ($1{,}030 + 197$). Feature vectors are standardized where appropriate by model type (e.g., SVR and GPR use StandardScaler).
 
+The overall pipeline is illustrated in Fig. 1.
+
+![Pipeline Diagram](figure1_pipeline.png)
+
 The dataset is partitioned using three distinct protocols, all seeded with **random seed 42** for reproducibility:
 
 **Random Split (Baseline)**: Interactions are randomly partitioned into training and test sets. This split contains 94,603 training rows and 23,651 test rows. Because the random split does not control for drug or protein identity, it may contain overlapping drug IDs and canonical SMILES across training and test sets, representing an easier evaluation setting.
@@ -97,9 +101,13 @@ The dataset is partitioned using three distinct protocols, all seeded with **ran
 
 **Cold-Protein Split**: Proteins are partitioned such that test proteins have zero overlap with training proteins by protein ID and amino-acid sequence. This split contains 97,850 training rows and 20,404 test rows. The leakage check confirms `protein_id_overlap = 0` and `protein_sequence_overlap = 0`. This evaluates generalization to unseen kinase targets.
 
+The three splitting protocols are illustrated in Fig. 3.
+
 Training uses subsampling for certain models due to computational constraints: Random Forest and XGBoost train on 20,000 randomly selected rows; SVR trains on 6,000 rows; and GPR trains on 2,500 rows. This is reported transparently and should not be interpreted as implying that all models were trained on all available data.
 
 ### E. Machine Learning Models
+
+![Split Protocols](figure3_splits.png)
 
 Four classical regression models are evaluated under identical featurization:
 
@@ -157,6 +165,10 @@ Table I presents the performance of all four models across all three evaluation 
 | GPR | Cold-Drug | 0.635 | 0.797 | 0.535 | 0.168 | 0.508 | 0.035 |
 | GPR | Cold-Protein | 0.590 | 0.768 | 0.515 | 0.238 | 0.563 | 0.041 |
 
+Fig. 2 summarizes these results graphically.
+
+![Results Bar Chart](figure2_results.png)
+
 ### B. Random Split Analysis
 
 Under the random split, XGBoost achieves the lowest RMSE (0.540) and the highest CI (0.820) and Pearson $r$ (0.765). GPR performs substantially worse, with Pearson $r = 0.020$ and R² = 0.195, indicating near-random predictive ability on this split. SVR achieves moderate performance (Pearson $r = 0.612$), and Random Forest is competitive (Pearson $r = 0.712$).
@@ -192,6 +204,10 @@ SHAP-based explanations are generated for individual predictions through the int
 The system reports which of the 1,227 input features most strongly influenced each prediction, distinguishing between positive contributions (features that pushed the predicted affinity higher) and negative contributions (features that pushed it lower). Drug-side contributions typically correspond to Morgan fingerprint bits associated with specific molecular substructures (e.g., aromatic ring systems, hydrogen-bond donors), while protein-side contributions correspond to amino-acid composition or CTD solvent accessibility features.
 
 It is important to emphasize that SHAP values describe model-internal feature attribution and do not establish biological causation. They indicate which features the model found predictive within its training distribution, not which molecular or protein features are causally responsible for binding affinity.
+
+An example SHAP attribution is shown in Fig. 4.
+
+![SHAP Summary](figure4_shap.png)
 
 ### G. Discussion
 

@@ -1,0 +1,185 @@
+/* IEEE Conference Paper Style */
+@page {
+    size: Letter;
+    margin: 1.5cm 1.5cm 1.5cm 1.5cm;
+}
+
+body {
+    font-family: "Times New Roman", Georgia, serif;
+    font-size: 10.5pt;
+    line-height: 1.4;
+    text-align: justify;
+    column-count: 2;
+    column-gap: 2em;
+    column-rule: 0.5pt solid #ccc;
+    margin: 0;
+    padding: 0;
+    color: #000;
+    background: #fff;
+}
+
+/* Title block */
+h1 {
+    font-size: 13pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    line-height: 1.2;
+    column-span: all;
+}
+
+/* Author block */
+h1 + p, h1 + div {
+    text-align: center;
+    font-size: 10pt;
+    margin-bottom: 0.5em;
+    column-span: all;
+}
+
+/* Sections */
+h2 {
+    font-size: 11pt;
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    column-span: all;
+    border-bottom: 1px solid #000;
+    padding-bottom: 0.2em;
+}
+
+h3 {
+    font-size: 10.5pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 0.8em;
+    margin-bottom: 0.3em;
+}
+
+/* Abstract */
+p:first-of-type {
+    font-style: italic;
+}
+
+/* Tables */
+table {
+    margin: 0.5em 0;
+    font-size: 9pt;
+    border-collapse: collapse;
+    width: 100%;
+    break-inside: avoid;
+}
+
+th, td {
+    border: 0.5pt solid #000;
+    padding: 0.2em 0.3em;
+    text-align: center;
+}
+
+caption {
+    caption-side: top;
+    font-size: 9pt;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.3em;
+}
+
+/* Figures */
+figure {
+    margin: 0.5em 0;
+    break-inside: avoid;
+    column-span: all;
+}
+
+figure img {
+    width: 100%;
+    height: auto;
+}
+
+figcaption {
+    font-size: 9pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 0.3em;
+}
+
+/* Equations */
+.math {
+    font-size: 10pt;
+    text-align: center;
+    margin: 0.5em 0;
+    column-span: all;
+}
+
+.math img {
+    margin: 0 auto;
+}
+
+/* Links */
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+/* Itemize */
+ul, ol {
+    margin: 0.3em 0;
+    padding-left: 1.5em;
+}
+
+li {
+    margin-bottom: 0.2em;
+}
+
+/* References */
+.bibliography {
+    font-size: 9pt;
+    column-span: all;
+}
+
+/* Header rule */
+hr {
+    border: none;
+    border-top: 1px solid #000;
+    margin: 1em 0;
+}
+
+/* Bold text */
+strong {
+    font-weight: bold;
+}
+
+/* Italic text */
+em {
+    font-style: italic;
+}
+
+/* Code */
+code {
+    font-family: "Courier New", monospace;
+    font-size: 9pt;
+}
+
+/* Blockquotes */
+blockquote {
+    margin: 0.5em 1em;
+    padding: 0.3em 0.5em;
+    border-left: 2pt solid #666;
+    font-style: italic;
+}
+
+/* Small text */
+small {
+    font-size: 9pt;
+}
+
+/* Ensure proper column balancing */
+section, article {
+    column-span: auto;
+}
+
+/* Prevent widow/orphan lines */
+p {
+    orphans: 3;
+    widows: 3;
+}

@@ -1,38 +1,207 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Classical Machine Learning for Kinase Drug-Target Affinity Prediction with Cold-Split Evaluation and Interpretable Feature Attribution</title>
+  <title>Classical Machine Learning for Kinase Drug-Target Affinity Prediction</title>
   <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-  </style>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ieee-trans-cs@1.0/ieee-trans.css" />
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+figcaption {
+    font-size: 9pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 0.3em;
+    break-inside: avoid;
+}
+</style>
+  <style type="text/css">
+@page {
+size: Letter;
+margin: 1.5cm 1.5cm 1.5cm 1.5cm;
+}
+body {
+font-family: "Times New Roman", Georgia, serif;
+font-size: 10.5pt;
+line-height: 1.4;
+text-align: justify;
+column-count: 2;
+column-gap: 2em;
+column-rule: 0.5pt solid #ccc;
+margin: 0;
+padding: 0;
+color: #000;
+background: #fff;
+}
+
+h1 {
+font-size: 13pt;
+font-weight: bold;
+text-align: center;
+margin-top: 0;
+margin-bottom: 0.5em;
+line-height: 1.2;
+column-span: all;
+}
+
+h1 + p, h1 + div {
+text-align: center;
+font-size: 10pt;
+margin-bottom: 0.5em;
+column-span: all;
+}
+
+h2 {
+font-size: 11pt;
+font-weight: bold;
+margin-top: 1em;
+margin-bottom: 0.5em;
+column-span: all;
+border-bottom: 1px solid #000;
+padding-bottom: 0.2em;
+}
+h3 {
+font-size: 10.5pt;
+font-weight: bold;
+font-style: italic;
+margin-top: 0.8em;
+margin-bottom: 0.3em;
+}
+
+p:first-of-type {
+font-style: italic;
+}
+
+table {
+margin: 0.5em 0;
+font-size: 9pt;
+border-collapse: collapse;
+width: 100%;
+break-inside: avoid;
+}
+th, td {
+border: 0.5pt solid #000;
+padding: 0.2em 0.3em;
+text-align: center;
+}
+caption {
+caption-side: top;
+font-size: 9pt;
+font-weight: bold;
+text-align: center;
+margin-bottom: 0.3em;
+}
+
+figure {
+margin: 0.5em 0;
+break-inside: avoid;
+column-span: all;
+}
+figure img {
+width: 100%;
+height: auto;
+}
+figcaption {
+font-size: 9pt;
+font-weight: bold;
+text-align: center;
+margin-top: 0.3em;
+}
+
+.math {
+font-size: 10pt;
+text-align: center;
+margin: 0.5em 0;
+column-span: all;
+}
+.math img {
+margin: 0 auto;
+}
+
+a {
+color: #0066cc;
+text-decoration: none;
+}
+
+ul, ol {
+margin: 0.3em 0;
+padding-left: 1.5em;
+}
+li {
+margin-bottom: 0.2em;
+}
+
+.bibliography {
+font-size: 9pt;
+column-span: all;
+}
+
+hr {
+border: none;
+border-top: 1px solid #000;
+margin: 1em 0;
+}
+
+strong {
+font-weight: bold;
+}
+
+em {
+font-style: italic;
+}
+
+code {
+font-family: "Courier New", monospace;
+font-size: 9pt;
+}
+
+blockquote {
+margin: 0.5em 1em;
+padding: 0.3em 0.5em;
+border-left: 2pt solid #666;
+font-style: italic;
+}
+
+small {
+font-size: 9pt;
+}
+
+section, article {
+column-span: auto;
+}
+
+p {
+orphans: 3;
+widows: 3;
+}
+figcaption {
+    font-size: 9pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 0.3em;
+    break-inside: avoid;
+}
+</style>
 </head>
 <body>
 <header id="title-block-header">
 <h1 class="title">Classical Machine Learning for Kinase Drug-Target
-Affinity Prediction with Cold-Split Evaluation and Interpretable Feature
-Attribution</h1>
+Affinity Prediction</h1>
 </header>
-<h1 data-number="1"
-id="classical-machine-learning-for-kinase-drugtarget-affinity-prediction-with-cold-split-evaluation-and-interpretable-feature-attribution"><span
-class="header-section-number">1</span> Classical Machine Learning for
+<h1 data-number="1" id="classical-machine-learning-for-kinase-drugtarget-affinity-prediction-with-cold-split-evaluation-and-interpretable-feature-attribution"><span class="header-section-number">1</span> Classical Machine Learning for
 Kinase Drug–Target Affinity Prediction with Cold-Split Evaluation and
 Interpretable Feature Attribution</h1>
 <p><strong>Abstract</strong> — Predicting drug–target binding affinity
@@ -61,17 +230,13 @@ performance.</p>
 machine learning, cold-split evaluation, data leakage, SHAP,
 interpretability, kinase inhibitors</p>
 <hr />
-<h2 data-number="1.1" id="i.-introduction"><span
-class="header-section-number">1.1</span> I. INTRODUCTION</h2>
+<h2 data-number="1.1" id="i.-introduction"><span class="header-section-number">1.1</span> I. INTRODUCTION</h2>
 <p>The identification of binding affinities between small-molecule drug
 candidates and biological protein targets is fundamental to target-based
 drug discovery and drug repurposing pipelines. Protein kinases represent
 one of the largest and most clinically relevant target classes,
 particularly in oncology and immunology.</p>
-<p>Traditional wet-lab bioassays (e.g., <span
-class="math inline"><em>K</em><sub><em>i</em></sub></span>, <span
-class="math inline"><em>K</em><sub><em>d</em></sub></span>, <span
-class="math inline"><em>I</em><em>C</em><sub>50</sub></span>) are
+<p>Traditional wet-lab bioassays (e.g., <span class="math inline"><em>K</em><sub><em>i</em></sub></span>, <span class="math inline"><em>K</em><sub><em>d</em></sub></span>, <span class="math inline"><em>I</em><em>C</em><sub>50</sub></span>) are
 expensive and time-consuming, often requiring weeks per compound and
 specialized equipment. Consequently, computational drug–target
 interaction (DTI) prediction has emerged as a primary filter to
@@ -84,8 +249,7 @@ targets frequently appear in both training and test sets. When deployed
 on genuinely novel drugs or unstudied protein targets, model performance
 can drop precipitously. This generalization gap undermines the practical
 utility of computationally predicted affinity scores.</p>
-<h3 data-number="1.1.1" id="key-contributions"><span
-class="header-section-number">1.1.1</span> Key Contributions</h3>
+<h3 data-number="1.1.1" id="key-contributions"><span class="header-section-number">1.1.1</span> Key Contributions</h3>
 <ol type="1">
 <li><strong>Systematic 4-Algorithm Benchmark</strong>: Comparative
 evaluation of Random Forest, XGBoost, Support Vector Regression (SVR),
@@ -107,10 +271,8 @@ application rendering the approved six-page product interface with
 real-time affinity scoring and SHAP explanations.</li>
 </ol>
 <hr />
-<h2 data-number="1.2" id="ii.-literature-survey"><span
-class="header-section-number">1.2</span> II. LITERATURE SURVEY</h2>
-<h3 data-number="1.2.1" id="drugtarget-interaction-prediction"><span
-class="header-section-number">1.2.1</span> Drug–Target Interaction
+<h2 data-number="1.2" id="ii.-literature-survey"><span class="header-section-number">1.2</span> II. LITERATURE SURVEY</h2>
+<h3 data-number="1.2.1" id="drugtarget-interaction-prediction"><span class="header-section-number">1.2.1</span> Drug–Target Interaction
 Prediction</h3>
 <p>Early computational approaches to DTI prediction relied on
 kernel-based similarity methods such as <strong>KronRLS</strong> and
@@ -127,8 +289,7 @@ benchmark results on the KIBA and Davis datasets. These approaches have
 demonstrated strong predictive performance, but they typically require
 large training datasets and substantial computational resources, and
 their predictions are often opaque to domain scientists.</p>
-<h3 data-number="1.2.2" id="classical-machine-learning-for-dti"><span
-class="header-section-number">1.2.2</span> Classical Machine Learning
+<h3 data-number="1.2.2" id="classical-machine-learning-for-dti"><span class="header-section-number">1.2.2</span> Classical Machine Learning
 for DTI</h3>
 <p>Classical machine learning models offer a compelling alternative for
 DTI prediction. Random Forest and gradient-boosted trees provide strong
@@ -138,8 +299,7 @@ trade-offs between model complexity and interpretability. Unlike deep
 learning approaches, classical models can be trained on modest-sized
 datasets, require less computational infrastructure, and produce more
 readily interpretable results.</p>
-<h3 data-number="1.2.3" id="evaluation-protocols-and-data-leakage"><span
-class="header-section-number">1.2.3</span> Evaluation Protocols and Data
+<h3 data-number="1.2.3" id="evaluation-protocols-and-data-leakage"><span class="header-section-number">1.2.3</span> Evaluation Protocols and Data
 Leakage</h3>
 <p>A critical concern in DTI model evaluation is the choice of
 train/test split protocol. Standard random splits may place
@@ -150,9 +310,7 @@ Cold-start evaluation protocols—in which test drugs or proteins are
 entirely absent from training—have been proposed to measure genuine
 generalization, but unified evaluations across multiple cold-start
 protocols remain relatively rare.</p>
-<h3 data-number="1.2.4"
-id="interpretable-machine-learning-in-drug-discovery"><span
-class="header-section-number">1.2.4</span> Interpretable Machine
+<h3 data-number="1.2.4" id="interpretable-machine-learning-in-drug-discovery"><span class="header-section-number">1.2.4</span> Interpretable Machine
 Learning in Drug Discovery</h3>
 <p>The SHapley Additive exPlanations (SHAP) framework [6] provides a
 principled approach to decomposing individual predictions into
@@ -162,10 +320,8 @@ features most strongly influence a predicted binding affinity, enabling
 researchers to assess whether a model relies on chemically meaningful
 patterns rather than dataset artifacts.</p>
 <hr />
-<h2 data-number="1.3" id="iii.-methodology"><span
-class="header-section-number">1.3</span> III. METHODOLOGY</h2>
-<h3 data-number="1.3.1" id="a.-dataset-description"><span
-class="header-section-number">1.3.1</span> A. Dataset Description</h3>
+<h2 data-number="1.3" id="iii.-methodology"><span class="header-section-number">1.3</span> III. METHODOLOGY</h2>
+<h3 data-number="1.3.1" id="a.-dataset-description"><span class="header-section-number">1.3.1</span> A. Dataset Description</h3>
 <p>The current evaluation uses the <strong>KIBA</strong> (Kinase
 Inhibitor BioActivity) benchmark dataset. KIBA is a curated collection
 of kinase–inhibitor binding affinity measurements derived from the
@@ -202,8 +358,7 @@ data.</p>
 drug SMILES string and a protein amino-acid sequence, the model predicts
 a continuous KIBA affinity score. Higher scores indicate tighter binding
 affinity.</p>
-<h3 data-number="1.3.2" id="b.-drug-representation"><span
-class="header-section-number">1.3.2</span> B. Drug Representation</h3>
+<h3 data-number="1.3.2" id="b.-drug-representation"><span class="header-section-number">1.3.2</span> B. Drug Representation</h3>
 <p>Each drug molecule is featurized into a
 <strong>1,030-dimensional</strong> numeric vector consisting of:</p>
 <ol type="1">
@@ -222,8 +377,7 @@ Bonds.</p></li>
 are difficult to express as linear descriptors, while the 6
 physicochemical descriptors provide interpretable scalar measures of
 molecular properties.</p>
-<h3 data-number="1.3.3" id="c.-protein-representation"><span
-class="header-section-number">1.3.3</span> C. Protein
+<h3 data-number="1.3.3" id="c.-protein-representation"><span class="header-section-number">1.3.3</span> C. Protein
 Representation</h3>
 <p>Each protein sequence is featurized into a
 <strong>197-dimensional</strong> numeric vector consisting of:</p>
@@ -241,16 +395,18 @@ dimensions)</strong>: An extension of AAC that incorporates
 sequence-order effects through pseudo-components, capturing local
 sequence patterns beyond simple amino-acid frequencies.</p></li>
 </ol>
-<h3 data-number="1.3.4"
-id="d.-data-preprocessing-and-data-splitting"><span
-class="header-section-number">1.3.4</span> D. Data Preprocessing and
+<h3 data-number="1.3.4" id="d.-data-preprocessing-and-data-splitting"><span class="header-section-number">1.3.4</span> D. Data Preprocessing and
 Data Splitting</h3>
 <p>Drug and protein feature vectors are extracted independently using
 RDKit and the protein featurization pipeline described above, then
-concatenated into the final 1,227-dimensional representation (<span
-class="math inline">1, 030 + 197</span>). Feature vectors are
+concatenated into the final 1,227-dimensional representation (<span class="math inline">1, 030 + 197</span>). Feature vectors are
 standardized where appropriate by model type (e.g., SVR and GPR use
 StandardScaler).</p>
+<p>The overall pipeline is illustrated in Fig. 1.</p>
+<figure>
+<img role="img" aria-label="Pipeline Diagram" src="figure1_pipeline.png" alt="Pipeline Diagram" />
+<figcaption >Pipeline Diagram</figcaption>
+</figure>
 <p>The dataset is partitioned using three distinct protocols, all seeded
 with <strong>random seed 42</strong> for reproducibility:</p>
 <p><strong>Random Split (Baseline)</strong>: Interactions are randomly
@@ -272,14 +428,18 @@ ID and amino-acid sequence. This split contains 97,850 training rows and
 <code>protein_id_overlap = 0</code> and
 <code>protein_sequence_overlap = 0</code>. This evaluates generalization
 to unseen kinase targets.</p>
+<p>The three splitting protocols are illustrated in Fig. 3.</p>
 <p>Training uses subsampling for certain models due to computational
 constraints: Random Forest and XGBoost train on 20,000 randomly selected
 rows; SVR trains on 6,000 rows; and GPR trains on 2,500 rows. This is
 reported transparently and should not be interpreted as implying that
 all models were trained on all available data.</p>
-<h3 data-number="1.3.5" id="e.-machine-learning-models"><span
-class="header-section-number">1.3.5</span> E. Machine Learning
+<h3 data-number="1.3.5" id="e.-machine-learning-models"><span class="header-section-number">1.3.5</span> E. Machine Learning
 Models</h3>
+<figure>
+<img role="img" aria-label="Split Protocols" src="figure3_splits.png" alt="Split Protocols" />
+<figcaption >Split Protocols</figcaption>
+</figure>
 <p>Four classical regression models are evaluated under identical
 featurization:</p>
 <ol type="1">
@@ -292,22 +452,17 @@ intrinsic feature importance.</p></li>
 column subsampling by tree 0.8. XGBoost employs sequential boosting to
 correct residual errors from previous trees.</p></li>
 <li><p><strong>Support Vector Regression (SVR)</strong>: An
-epsilon-support vector regression model with <span
-class="math inline"><em>C</em> = 30.0</span>, <span
-class="math inline"><em>ϵ</em> = 0.1</span>, and RBF kernel with
+epsilon-support vector regression model with <span class="math inline"><em>C</em> = 30.0</span>, <span class="math inline"><em>ϵ</em> = 0.1</span>, and RBF kernel with
 <code>scale</code> gamma. SVR finds a function that deviates from
-observed targets by no more than <span
-class="math inline"><em>ϵ</em></span> while minimizing model
+observed targets by no more than <span class="math inline"><em>ϵ</em></span> while minimizing model
 complexity.</p></li>
 <li><p><strong>Gaussian Process Regression (GPR)</strong>: A Bayesian
 nonparametric regression model with a Matern kernel (ConstantKernel,
-Matern, WhiteKernel) and <span
-class="math inline"><em>α</em> = 0.05</span>. GPR provides both
+Matern, WhiteKernel) and <span class="math inline"><em>α</em> = 0.05</span>. GPR provides both
 predictions and uncertainty estimates, though it is computationally
 expensive for large datasets.</p></li>
 </ol>
-<h3 data-number="1.3.6" id="f.-model-explainability-using-shap"><span
-class="header-section-number">1.3.6</span> F. Model Explainability Using
+<h3 data-number="1.3.6" id="f.-model-explainability-using-shap"><span class="header-section-number">1.3.6</span> F. Model Explainability Using
 SHAP</h3>
 <p>SHAP (SHapley Additive exPlanations) is applied to decompose
 individual affinity predictions into per-feature contributions. For
@@ -325,8 +480,7 @@ accessibility) most influenced the prediction.</p>
 biological causation. They indicate which features the model found
 predictive, not which features are causally responsible for binding
 affinity.</p>
-<h3 data-number="1.3.7" id="g.-performance-evaluation"><span
-class="header-section-number">1.3.7</span> G. Performance
+<h3 data-number="1.3.7" id="g.-performance-evaluation"><span class="header-section-number">1.3.7</span> G. Performance
 Evaluation</h3>
 <p>The following regression metrics are reported for each model–split
 combination:</p>
@@ -354,14 +508,11 @@ magnitude, R² measures explained variance, CI measures ranking quality,
 and Pearson <span class="math inline"><em>r</em></span> measures linear
 association.</p>
 <hr />
-<h2 data-number="1.4" id="iv.-results-and-discussion"><span
-class="header-section-number">1.4</span> IV. RESULTS AND DISCUSSION</h2>
-<h3 data-number="1.4.1" id="a.-overall-performance-evaluation"><span
-class="header-section-number">1.4.1</span> A. Overall Performance
+<h2 data-number="1.4" id="iv.-results-and-discussion"><span class="header-section-number">1.4</span> IV. RESULTS AND DISCUSSION</h2>
+<h3 data-number="1.4.1" id="a.-overall-performance-evaluation"><span class="header-section-number">1.4.1</span> A. Overall Performance
 Evaluation</h3>
 <p>Table I presents the performance of all four models across all three
-evaluation splits, reporting MSE, RMSE, MAE, R², CI, and Pearson <span
-class="math inline"><em>r</em></span> on the test sets. All experiments
+evaluation splits, reporting MSE, RMSE, MAE, R², CI, and Pearson <span class="math inline"><em>r</em></span> on the test sets. All experiments
 use seed 42 and the 1,227-dimensional feature representation described
 in Section III.</p>
 <p><strong>Table I.</strong> PERFORMANCE OF MACHINE-LEARNING MODELS
@@ -386,8 +537,7 @@ ACROSS DATA SPLITS</p>
 <th style="text-align: right;">MAE</th>
 <th style="text-align: right;">R²</th>
 <th style="text-align: right;">CI</th>
-<th style="text-align: right;">Pearson <span
-class="math inline"><em>r</em></span></th>
+<th style="text-align: right;">Pearson <span class="math inline"><em>r</em></span></th>
 </tr>
 </thead>
 <tbody>
@@ -513,36 +663,32 @@ class="math inline"><em>r</em></span></th>
 </tr>
 </tbody>
 </table>
-<h3 data-number="1.4.2" id="b.-random-split-analysis"><span
-class="header-section-number">1.4.2</span> B. Random Split Analysis</h3>
+<p>Fig. 2 summarizes these results graphically.</p>
+<figure>
+<img role="img" aria-label="Results Bar Chart" src="figure2_results.png" alt="Results Bar Chart" />
+<figcaption >Results Bar Chart</figcaption>
+</figure>
+<h3 data-number="1.4.2" id="b.-random-split-analysis"><span class="header-section-number">1.4.2</span> B. Random Split Analysis</h3>
 <p>Under the random split, XGBoost achieves the lowest RMSE (0.540) and
-the highest CI (0.820) and Pearson <span
-class="math inline"><em>r</em></span> (0.765). GPR performs
-substantially worse, with Pearson <span
-class="math inline"><em>r</em> = 0.020</span> and R² = 0.195, indicating
+the highest CI (0.820) and Pearson <span class="math inline"><em>r</em></span> (0.765). GPR performs
+substantially worse, with Pearson <span class="math inline"><em>r</em> = 0.020</span> and R² = 0.195, indicating
 near-random predictive ability on this split. SVR achieves moderate
-performance (Pearson <span
-class="math inline"><em>r</em> = 0.612</span>), and Random Forest is
-competitive (Pearson <span
-class="math inline"><em>r</em> = 0.712</span>).</p>
+performance (Pearson <span class="math inline"><em>r</em> = 0.612</span>), and Random Forest is
+competitive (Pearson <span class="math inline"><em>r</em> = 0.712</span>).</p>
 <p>However, the random split should not be interpreted as evidence of
 genuine generalization to unseen drugs or proteins. Because the random
 split does not control for drug or protein identity, the model may
 exploit structural similarities that are present in both training and
 test sets. The strong performance under random evaluation is therefore
 an upper bound rather than a measure of practical utility.</p>
-<h3 data-number="1.4.3" id="c.-cold-drug-evaluation"><span
-class="header-section-number">1.4.3</span> C. Cold-Drug Evaluation</h3>
+<h3 data-number="1.4.3" id="c.-cold-drug-evaluation"><span class="header-section-number">1.4.3</span> C. Cold-Drug Evaluation</h3>
 <p>Under the cold-drug split, performance drops substantially compared
 to the random split, confirming that random-split evaluation
 overestimates generalization to unseen drugs. XGBoost maintains the
-strongest performance (RMSE = 0.600, CI = 0.750, Pearson <span
-class="math inline"><em>r</em> = 0.658</span>), followed closely by
+strongest performance (RMSE = 0.600, CI = 0.750, Pearson <span class="math inline"><em>r</em> = 0.658</span>), followed closely by
 Random Forest (RMSE = 0.608, CI = 0.760, Pearson $r = 0.652).</p>
 <p>The performance degradation from random to cold-drug is most
-pronounced for GPR, which drops from Pearson <span
-class="math inline"><em>r</em> = 0.020</span> to <span
-class="math inline">0.035</span> (GPR remains poor in both settings).
+pronounced for GPR, which drops from Pearson <span class="math inline"><em>r</em> = 0.020</span> to <span class="math inline">0.035</span> (GPR remains poor in both settings).
 For SVR, Pearson <span class="math inline"><em>r</em></span> drops from
 0.612 to 0.510, a decline of approximately 17%. XGBoost’s decline from
 0.765 to 0.658 is smaller in absolute terms, suggesting that
@@ -552,8 +698,7 @@ candidates.</p>
 <code>canonical_smiles_overlap = 0</code>, ensuring that the cold-drug
 evaluation genuinely tests generalization to novel drug structures
 rather than memorization of training compounds.</p>
-<h3 data-number="1.4.4" id="d.-cold-protein-evaluation"><span
-class="header-section-number">1.4.4</span> D. Cold-Protein
+<h3 data-number="1.4.4" id="d.-cold-protein-evaluation"><span class="header-section-number">1.4.4</span> D. Cold-Protein
 Evaluation</h3>
 <p>Under the cold-protein split, performance declines further,
 reflecting the additional difficulty of generalizing to unseen protein
@@ -562,26 +707,21 @@ targets. XGBoost again achieves the best performance (RMSE = 0.613, CI =
 followed by Random Forest (RMSE = 0.658, CI = 0.652, Pearson $r =
 0.525).</p>
 <p>The performance gap between cold-drug and cold-protein evaluation is
-noteworthy. For XGBoost, Pearson <span
-class="math inline"><em>r</em></span> drops from 0.658 (cold-drug) to
+noteworthy. For XGBoost, Pearson <span class="math inline"><em>r</em></span> drops from 0.658 (cold-drug) to
 0.605 (cold-protein), a decline of approximately 8%. For Random Forest,
 the drop is larger: from 0.652 to 0.525 (approximately 20%). This
 suggests that protein targets introduce greater heterogeneity than drug
 candidates, and that models may learn drug-specific patterns more
 readily than protein-specific patterns.</p>
-<p>GPR continues to perform poorly across all splits, with Pearson <span
-class="math inline"><em>r</em></span> near zero under cold-protein
-(0.041). SVR shows modest but consistent performance (Pearson <span
-class="math inline"><em>r</em></span> between 0.510 and 0.612).</p>
-<h3 data-number="1.4.5" id="e.-model-comparison"><span
-class="header-section-number">1.4.5</span> E. Model Comparison</h3>
+<p>GPR continues to perform poorly across all splits, with Pearson <span class="math inline"><em>r</em></span> near zero under cold-protein
+(0.041). SVR shows modest but consistent performance (Pearson <span class="math inline"><em>r</em></span> between 0.510 and 0.612).</p>
+<h3 data-number="1.4.5" id="e.-model-comparison"><span class="header-section-number">1.4.5</span> E. Model Comparison</h3>
 <p>Across all three splits, XGBoost achieves the lowest RMSE and highest
 CI and Pearson <span class="math inline"><em>r</em></span>. Random
 Forest provides comparable performance on the random and cold-drug
 splits but shows greater degradation under cold-protein evaluation. SVR
 offers intermediate performance, while GPR substantially underperforms,
-particularly on the random split where its Pearson <span
-class="math inline"><em>r</em></span> is effectively zero.</p>
+particularly on the random split where its Pearson <span class="math inline"><em>r</em></span> is effectively zero.</p>
 <p>It is important to note that GPR’s poor performance may partly
 reflect the subsampling strategy (2,500 training rows), which is
 substantially smaller than the 20,000 rows used by RF and XGBoost. A
@@ -589,8 +729,7 @@ more thorough comparison with equal training data would require
 additional experiments. Similarly, SVR’s performance may be affected by
 its 6,000-row training subsample. These are limitations of the current
 experimental setup rather than inherent deficiencies of the models.</p>
-<h3 data-number="1.4.6" id="f.-explainability-and-shap-analysis"><span
-class="header-section-number">1.4.6</span> F. Explainability and SHAP
+<h3 data-number="1.4.6" id="f.-explainability-and-shap-analysis"><span class="header-section-number">1.4.6</span> F. Explainability and SHAP
 Analysis</h3>
 <p>SHAP-based explanations are generated for individual predictions
 through the interactive web application. For tree-based models (RF,
@@ -609,8 +748,12 @@ feature attribution and do not establish biological causation. They
 indicate which features the model found predictive within its training
 distribution, not which molecular or protein features are causally
 responsible for binding affinity.</p>
-<h3 data-number="1.4.7" id="g.-discussion"><span
-class="header-section-number">1.4.7</span> G. Discussion</h3>
+<p>An example SHAP attribution is shown in Fig. 4.</p>
+<figure>
+<img role="img" aria-label="SHAP Summary" src="figure4_shap.png" alt="SHAP Summary" />
+<figcaption >SHAP Summary</figcaption>
+</figure>
+<h3 data-number="1.4.7" id="g.-discussion"><span class="header-section-number">1.4.7</span> G. Discussion</h3>
 <p>The results highlight a significant generalization gap between
 random-split and cold-split evaluation. All models perform better under
 random splits, but this advantage is partly attributable to data leakage
@@ -632,8 +775,7 @@ heterogeneous feature space of drug–target pairs when training data is
 limited. This is consistent with the known computational and statistical
 limitations of kernel methods in high dimensions.</p>
 <hr />
-<h2 data-number="1.5" id="v.-conclusion-and-future-work"><span
-class="header-section-number">1.5</span> V. CONCLUSION AND FUTURE
+<h2 data-number="1.5" id="v.-conclusion-and-future-work"><span class="header-section-number">1.5</span> V. CONCLUSION AND FUTURE
 WORK</h2>
 <p>In this work, we developed and evaluated an interpretable
 machine-learning framework for drug–target affinity prediction using
@@ -650,8 +792,7 @@ features drive model decisions.</p>
 <p>These results establish DTI-ML as a reproducible, interpretable
 benchmark for kinase affinity regression, with honest evaluation through
 leakage-safe cold-split protocols.</p>
-<h3 data-number="1.5.1" id="future-work"><span
-class="header-section-number">1.5.1</span> Future Work</h3>
+<h3 data-number="1.5.1" id="future-work"><span class="header-section-number">1.5.1</span> Future Work</h3>
 <p>The following experiments are planned in a future phase:</p>
 <ol type="1">
 <li><strong>Simple Baselines</strong>: Establish comparison against
@@ -685,8 +826,7 @@ formal submission after additional review.</li>
 <p>These experiments have <strong>not</strong> been completed and should
 not be interpreted as reported results.</p>
 <hr />
-<h2 data-number="1.6" id="vi.-references"><span
-class="header-section-number">1.6</span> VI. REFERENCES</h2>
+<h2 data-number="1.6" id="vi.-references"><span class="header-section-number">1.6</span> VI. REFERENCES</h2>
 <ol type="1">
 <li><p>T. He, X. Wang, and Y. Liu, “SimBoost: a read-across approach for
 predicting drug–target binding affinities using gradient boosting
