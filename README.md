@@ -1,27 +1,43 @@
 # DTI-ML
 
-DTI-ML predicts kinase drug-target binding affinity from a drug SMILES string and a protein sequence. It uses classical machine learning, leakage-safe cold-split evaluation, SHAP-based explainability, and a project-grounded AI chatbot.
+Predicting kinase drug-target binding affinity with classical ML, leakage-safe cold-split evaluation, and SHAP-based explainability.
 
-The production application is a React frontend backed by a FastAPI service. The required product design is defined by [PRODUCT_DESIGN.md](PRODUCT_DESIGN.md) and [design-reference.html](design-reference.html).
+![Python](https://img.shields.io/badge/Python-3.12.4-3776AB?logo=python&logoColor=white)
+![Dataset](https://img.shields.io/badge/Dataset-KIBA-real-green)
+![Experiments](https://img.shields.io/badge/Experiments-12-completed-brightgreen)
+![Seed](https://img.shields.io/badge/Seed-42-reproducible-blue)
 
-## Research Foundation
+- **[🧬 Research Foundation](#-research-foundation)**
+- **[🏗️ Architecture](#-architecture)**
+- **[🚀 Setup](#-setup)**
+- **[🧪 Tests and Build](#-tests-and-build)**
+- **[💾 Data and Models](#-data-and-models)**
+- **[🚀 Production](#-production)**
+- **[🔍 Explainability](#-explainability)**
+
+---
+
+## 🧬 Research Foundation
 
 ### Dataset
 
-- **Real KIBA** (Kinase Inhibitor BioActivity benchmark dataset)
-- **118,254** drug-target interactions
-- **2,111** unique drugs, **2,068** unique canonical SMILES
-- **229** unique proteins
+| Property | Value |
+|---|---|
+| Dataset | **KIBA** (Kinase Inhibitor BioActivity benchmark) |
+| Interactions | **118,254** |
+| Unique drugs | **2,111** |
+| Canonical SMILES | **2,068** |
+| Proteins | **229** |
 
 ### Feature Representation
 
-- **1,030** drug features: Morgan ECFP4 fingerprints (1,024-bit) + 6 physicochemical descriptors (MW, LogP, TPSA, HBD, HBA, Rotatable Bonds)
-- **197** protein features: AAC (20-dim) + CTD (147-dim) + PSEAAC (30-dim)
-- **1,227** combined dimensions
+| Component | Dimensions | Description |
+|---|---|---|
+| Drug features | **1,030** | Morgan ECFP4 (1,024-bit) + 6 descriptors (MW, LogP, TPSA, HBD, HBA, Rotatable Bonds) |
+| Protein features | **197** | AAC (20-dim) + CTD (147-dim) + PSEAAC (30-dim) |
+| **Combined** | **1,227** | Concatenated representation |
 
 ### Evaluation
-
-Three partitioning protocols evaluated across four classical ML models:
 
 | Split | Purpose | Leakage Prevention |
 |---|---|---|
@@ -29,44 +45,53 @@ Three partitioning protocols evaluated across four classical ML models:
 | **Cold-Drug Split** | Unseen drug candidates | `drug_id_overlap = 0`, `canonical_smiles_overlap = 0` |
 | **Cold-Protein Split** | Unseen protein targets | `protein_id_overlap = 0`, `protein_sequence_overlap = 0` |
 
-- **Models**: Random Forest, XGBoost, Support Vector Regression (SVR), Gaussian Process Regression (GPR)
-- **12** completed experiment cells (3 splits × 4 models)
-- **seed = 42** for reproducibility
-- **Metrics**: MSE, RMSE, Pearson _r_, Concordance Index (CI)
+| Detail | Value |
+|---|---|
+| Models | Random Forest, XGBoost, SVR, GPR |
+| Experiment cells | **12** (3 splits × 4 models) |
+| Random seed | **seed = 42** |
+| Metrics | MSE, RMSE, Pearson _r_, Concordance Index (CI) |
 
-Authoritative current results are in `models/kiba_results.csv`, `models/kiba_detailed_results.csv`, and `models/kiba_experiment_manifest.json`.
+Authoritative current results: `models/kiba_results.csv`, `models/kiba_detailed_results.csv`, `models/kiba_experiment_manifest.json`.
 
-### Legacy Synthetic Data
+> **Important — Legacy Synthetic Data**  
+> Legacy synthetic/development benchmark data may exist in the repository for testing and development purposes. It is **NOT** the current research evaluation. The current evaluation uses real KIBA data with the 1,227-dimensional representation and leakage-safe cold splits described above.
 
-Legacy synthetic/development benchmark data may exist in the repository for testing and development purposes. It is **NOT** the current research evaluation. The current evaluation uses real KIBA data with the 1,227-dimensional representation and leakage-safe cold splits described above.
+---
 
-## Architecture
+## 🏗️ Architecture
 
 ```mermaid
 %% DTI-ML Architecture
 graph TD
+    classDef frontend fill:#3B82F6,stroke:#1D4ED8,color:#fff;
+    classDef backend fill:#8B5CF6,stroke:#6D28D9,color:#fff;
+    classDef knowledge fill:#F59E0B,stroke:#D97706,color:#000;
+    classDef models fill:#10B981,stroke:#059669,color:#fff;
+    classDef user fill:#6B7280,stroke:#4B5563,color:#fff;
+
     User((User))
 
-    subgraph React Frontend
-        PredictionUI[Prediction UI]
-        ChatWidget[Chat Widget]
-        SciencePage[Model & Science Page]
+    subgraph FE["⚛️ React Frontend"]
+        PredictionUI((Prediction UI))
+        ChatWidget((Chat Widget))
+        SciencePage((Model & Science Page))
     end
 
-    subgraph FastAPI Backend
-        API[POST /api/chat]
+    subgraph BE["⚡ FastAPI Backend"]
         Predict[POST /api/predict]
+        API[POST /api/chat]
         Benchmarks[GET /api/benchmarks]
     end
 
-    subgraph Knowledge & Data Layer
-        Manifest[kiba_experiment_manifest.json]
+    subgraph KD["📚 Knowledge & Data Layer"]
+        Manifest[(kiba_experiment_manifest.json)]
         Summary[data/kiba_summary.json]
         SplitMeta[data/kiba_split_metadata.json]
-        Features[features/feature_manifest.json]
+        Features[(features/feature_manifest.json)]
     end
 
-    subgraph ML Models
+    subgraph ML["🤖 ML Models"]
         RF[Random Forest]
         XGB[XGBoost]
         SVR[SVR]
@@ -75,18 +100,28 @@ graph TD
 
     User --> PredictionUI
     User --> ChatWidget
+    User --> SciencePage
     PredictionUI --> Predict
     ChatWidget --> API
     SciencePage --> Benchmarks
     Predict --> Features
-    Predict --> RF & XGB & SVR & GPR
-    API --> Knowledge & Data Layer
-    Knowledge & Data Layer -->|"Gemini 2.5 Flash"| API
+    Predict --> RF
+    Predict --> XGB
+    Predict --> SVR
+    Predict --> GPR
+    API --> Manifest
+    Manifest -.->|"Gemini 2.5 Flash"| API
     Benchmarks --> Manifest
     RF --> Predict
     XGB --> Predict
     SVR --> Predict
     GPR --> Predict
+
+    class User,PredictionUI,ChatWidget,SciencePage frontend
+    class Predict,API,Benchmarks backend
+    class Manifest,Summary,SplitMeta,Features knowledge
+    class RF,XGB,SVR,GPR models
+    class User user
 ```
 
 ### Data and Model Layer
@@ -107,7 +142,9 @@ The chatbot provides project-grounded Q&A:
 - **Guardrails**: Blocked-pattern filter, refusal for off-topic/medical questions, fallback when no API key
 - **Local cache** for common questions (score meaning, cold-split rationale, SHAP explanation)
 
-The chatbot uses lightweight keyword-based knowledge retrieval — not vector databases, embeddings, or LangChain.
+> The chatbot uses lightweight keyword-based knowledge retrieval — not vector databases, embeddings, or LangChain.
+
+---
 
 ## Repository Guide
 
@@ -124,7 +161,9 @@ docs/archive/  Historical planning documents
 
 Use [CONTRIBUTING.md](CONTRIBUTING.md) for extension and maintenance rules. Use [PRODUCT_DESIGN.md](PRODUCT_DESIGN.md) for UI and interaction requirements.
 
-## Setup
+---
+
+## 🚀 Setup
 
 ```powershell
 python -m venv venv
@@ -136,7 +175,9 @@ npm ci
 
 Copy `.env.example` to `.env` and `frontend/.env.example` to `frontend/.env`. Configure `VITE_API_BASE` for the frontend and `DTI_ALLOWED_ORIGINS`, `DTI_MODELS_DIR`, `DTI_API_VERSION`, and optional `GEMINI_API_KEY` for the API.
 
-## Run Locally
+---
+
+## 🚀 Run Locally
 
 Start the API from the repository root:
 
@@ -153,7 +194,9 @@ npm run dev
 
 The default URLs are `http://127.0.0.1:8000` for the API and `http://localhost:5173` for the frontend.
 
-## Tests and Build
+---
+
+## 🧪 Tests and Build
 
 ```powershell
 # Repository root
@@ -169,7 +212,9 @@ npm run test:e2e
 
 Playwright E2E tests start the local FastAPI and Vite servers automatically. The successful prediction flow uses the real local model; only deterministic error cases use API interception. Install Chromium once with `npx playwright install chromium` when browser tooling is available. E2E screenshots and reports are written to ignored test-output directories.
 
-## Data and Models
+---
+
+## 💾 Data and Models
 
 Run the data pipeline and training scripts only when intentionally regenerating artifacts:
 
@@ -179,9 +224,11 @@ python features/featurizer.py
 python models/train_models.py
 ```
 
-Model checkpoints are ignored by Git and must be present under `DTI_MODELS_DIR` at runtime. Authoritative current result files are `models/kiba_results.csv`, `models/kiba_detailed_results.csv`, and `models/kiba_experiment_manifest.json`.
+> **Note** — Model checkpoints are ignored by Git and must be present under `DTI_MODELS_DIR` at runtime. Authoritative current result files are `models/kiba_results.csv`, `models/kiba_detailed_results.csv`, and `models/kiba_experiment_manifest.json`. The checked-in `models/results.csv` supplies the science-page benchmark table.
 
-## Production
+---
+
+## 🚀 Production
 
 Build the frontend and run the API with production hosts:
 
@@ -203,6 +250,8 @@ python -m pip install -r requirements.txt
 python -m pip freeze > requirements-lock.txt
 ```
 
-## Explainability
+---
+
+## 🔍 Explainability
 
 SHAP-based feature attribution is available for individual predictions. The system reports which drug substructure features (Morgan fingerprint bits, physicochemical descriptors) and protein composition features (AAC, CTD, PSEAAC) contributed most to the predicted binding affinity, with both positive and negative contributions identified.
