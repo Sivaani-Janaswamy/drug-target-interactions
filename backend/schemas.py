@@ -40,8 +40,15 @@ class ChatRequest(BaseModel):
     context: dict[str, Any] = Field(default_factory=dict)
 
 
+class SourceReference(BaseModel):
+    title: str
+    file: str
+    section: str | None = None
+
+
 class ChatResponse(BaseModel):
     answer: str
+    sources: list[SourceReference] = Field(default_factory=list)
 
 
 class ErrorResponse(BaseModel):

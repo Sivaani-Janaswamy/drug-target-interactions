@@ -53,4 +53,5 @@ def predict(payload: PredictionRequest) -> dict:
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(payload: ChatRequest, request: Request) -> ChatResponse:
     client_id = request.client.host if request.client else "anonymous"
-    return ChatResponse(answer=get_chat_answer(payload.question, payload.context, client_id))
+    result = get_chat_answer(payload.question, payload.context, client_id)
+    return ChatResponse(answer=result["answer"], sources=result.get("sources", []))
