@@ -2,11 +2,12 @@
 
 Predicting kinase drug-target binding affinity with classical ML, leakage-safe cold-split evaluation, and SHAP-based explainability.
 
-![Python](https://img.shields.io/badge/Python-3.12.4-3776AB?logo=python&logoColor=white)
-![Dataset](https://img.shields.io/badge/Dataset-KIBA-real-green)
-![Experiments](https://img.shields.io/badge/Experiments-12-completed-brightgreen)
-![Seed](https://img.shields.io/badge/Seed-42-reproducible-blue)
+[![Python](https://img.shields.io/badge/python-3.12-blue?style=plastic&logo=python&logoColor=white)](https://python.org)
+[![Dataset](https://img.shields.io/badge/dataset-KIBA-blueviolet?style=plastic)](https://github.com/deepchem/deepchem/tree/master/deepchem/data/datasets/data)
+[![Experiments](https://img.shields.io/badge/experiments-12%20cells-orange?style=plastic)](https://github.com/sivaa1999/drug-target-interactions/blob/main/models/kiba_results.csv)
+[![Seed](https://img.shields.io/badge/seed-42-lightgrey?style=plastic)](#)
 
+- **[🧬 What This Project Does](#-what-this-project-does)**
 - **[🧬 Research Foundation](#-research-foundation)**
 - **[🏗️ Architecture](#-architecture)**
 - **[🚀 Setup](#-setup)**
@@ -14,6 +15,63 @@ Predicting kinase drug-target binding affinity with classical ML, leakage-safe c
 - **[💾 Data and Models](#-data-and-models)**
 - **[🚀 Production](#-production)**
 - **[🔍 Explainability](#-explainability)**
+
+---
+
+## 🧬 What This Project Does
+
+Drug-target interaction (DTI) prediction asks a deceptively simple question: given a small molecule drug and a protein target, how tightly will they bind? The answer — a quantitative binding affinity score — is one of the most consequential inputs in modern drug discovery, yet measuring it experimentally requires costly wet-lab assays that take weeks per compound and demand specialized equipment. A computational predictor that can pre-filter candidate compounds before any lab work begins has the potential to compress years of effort and millions of dollars into a single screening step.
+
+DTI-ML addresses this problem for **protein kinases**, one of the largest and most therapeutically relevant families of drug targets. The system takes as input a drug SMILES string and a protein amino-acid sequence, and outputs a predicted binding affinity score on the KIBA scale — higher scores indicate tighter binding.
+
+### Input → Output
+
+A concrete example: the drug **Aspirin** (`CC(=O)OC1=CC=CC=C1C(=O)O`) paired with the kinase target **ABL1**, encoded as a protein sequence of ~387 amino acids. Feeding this pair through the ML pipeline produces:
+
+```mermaid
+%% ML Pipeline: Drug + Protein → Prediction + Explanation
+graph LR
+    classDef input fill:#3B82F6,stroke:#1D4ED8,color:#fff;
+    classDef featurize fill:#F59E0B,stroke:#D97706,color:#000;
+    classDef vector fill:#6366F1,stroke:#4F46E5,color:#fff;
+    classDef models fill:#10B981,stroke:#059669,color:#fff;
+    classDef output fill:#8B5CF6,stroke:#6D28D9,color:#fff;
+
+    SMILES([Drug SMILES]) --> FEAT
+    PROTEIN([Protein Sequence]) --> FEAT
+    FEAT[Featurization\n1030 + 197 = 1227] --> VEC
+    VEC[Combined Vector\n1,227-dim] -->|RF| PRED
+    VEC -->|XGB| PRED
+    VEC -->|SVR| PRED
+    VEC -->|GPR| PRED
+    PRED[Predicted Affinity\n+ SHAP Explanation]
+
+    class SMILES,PROTEIN input
+    class FEAT featurize
+    class VEC vector
+    class PRED output
+```
+
+Each of the four models — Random Forest, XGBoost, SVR, and Gaussian Process Regression — produces its own prediction, and the system reports which molecular substructures and protein features drove the result.
+
+### Why Cold-Split Evaluation Is the Core Contribution
+
+Standard machine-learning evaluation uses random train/test splits, which appears straightforward but is deeply misleading for DTI prediction. In the KIBA dataset, similar drug molecules and homologous kinase proteins appear across the entire dataset. A random split often places near-duplicates in both training and test sets, so the model can achieve high accuracy by memorizing structural patterns rather than learning genuine binding determinants. This produces **artificially optimistic metrics** that collapse when the model encounters genuinely novel compounds or targets — the exact scenario that matters in real drug discovery.
+
+Cold-split evaluation eliminates this leak by enforcing strict separation:
+
+- **Cold-Drug Split**: Every drug in the test set has zero overlap with the training set by drug ID and canonical SMILES. The model is tested on entirely novel drug candidates it has never seen — this measures whether it has learned to recognize *molecular pharmacophores* rather than memorizing specific structures.
+- **Cold-Protein Split**: Every protein in the test set has zero overlap with the training set by protein ID and amino-acid sequence. The model is tested on entirely novel kinase targets — this measures whether it has learned *target-agnostic binding principles* rather than memorizing specific protein profiles.
+
+This distinction matters because a model that performs well on random splits but poorly on cold splits has not actually learned to predict binding affinity; it has learned to exploit dataset artifacts. Cold-split evaluation is the mechanism that separates genuine predictive power from memorization.
+
+### Why Classical ML Instead of Deep Learning
+
+This project deliberately uses classical machine learning — Random Forest, XGBoost, SVR, and Gaussian Process Regression — rather than deep neural networks. The choice is a **design decision, not a limitation**. With 118,254 interactions across 2,111 drugs and 229 proteins, the dataset is well-sized for classical models but modest by deep-learning standards. Classical models offer three advantages here: **interpretability** via SHAP feature attribution, **data efficiency** without the need for large-scale pretraining or GPU infrastructure, and **faster iteration** for hyperparameter tuning and comparison across splits. Deep learning would add complexity without a proportionate gain in understanding.
+
+### The Explainability Angle
+
+A black-box model tells you the score but not why. SHAP (SHapley Additive exPlanations) decomposes each prediction into per-feature contributions, revealing exactly which molecular substructures — such as specific Morgan fingerprint bits corresponding to aromatic ring systems or hydrogen-bond donor patterns — and which protein composition features — such as amino-acid composition or CTD solvent accessibility profiles — pushed the score up or down. This turns a prediction from an opaque number into a testable scientific hypothesis, allowing a researcher to inspect whether the model is relying on chemically meaningful patterns rather than dataset artifacts.
 
 ---
 
