@@ -1,0 +1,35 @@
+{
+  "dataset": "KIBA",
+  "splits": [
+    "random",
+    "cold_drug",
+    "cold_protein"
+  ],
+  "models": [
+    "xgboost"
+  ],
+  "total_runs": 3,
+  "feature_dim": 1227,
+  "random_seed": 42,
+  "completed_at": "2026-09-15T06:56:33.625785+00:00",
+  "best_by_split": {
+    "random": {
+      "model": "XGBoost",
+      "test_rmse": 0.5404383199241527,
+      "test_ci": 0.8201839410676718,
+      "test_pearson_r": 0.765426173615644
+    },
+    "cold_drug": {
+      "model": "XGBoost",
+      "test_rmse": 0.5999205834759455,
+      "test_ci": 0.7498761510510683,
+      "test_pearson_r": 0.6578097959673039
+    },
+    "cold_protein": {
+      "model": "XGBoost",
+      "test_rmse": 0.6125216305085734,
+      "test_ci": 0.6851811032810585,
+      "test_pearson_r": 0.6047425754771284
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "random": {
+    "train_rows": 94603,
+    "test_rows": 23651,
+    "train_drugs": 2111,
+    "test_drugs": 2071,
+    "drug_id_overlap": 2071,
+    "train_smiles": 2068,
+    "test_smiles": 2029,
+    "smiles_overlap": 2029,
+    "train_proteins": 229,
+    "test_proteins": 229,
+    "protein_id_overlap": 229,
+    "train_sequences": 229,
+    "test_sequences": 229,
+    "sequence_overlap": 229
+  },
+  "cold_drug": {
+    "train_rows": 93719,
+    "test_rows": 24535,
+    "train_drugs": 1691,
+    "test_drugs": 420,
+    "drug_id_overlap": 0,
+    "train_smiles": 1655,
+    "test_smiles": 413,
+    "smiles_overlap": 0,
+    "train_proteins": 229,
+    "test_proteins": 229,
+    "protein_id_overlap": 229,
+    "train_sequences": 229,
+    "test_sequences": 229,
+    "sequence_overlap": 229
+  },
+  "cold_protein": {
+    "train_rows": 97850,
+    "test_rows": 20404,
+    "train_drugs": 2111,
+    "test_drugs": 2048,
+    "drug_id_overlap": 2048,
+    "train_smiles": 2068,
+    "test_smiles": 2007,
+    "smiles_overlap": 2007,
+    "train_proteins": 184,
+    "test_proteins": 45,
+    "protein_id_overlap": 0,
+    "train_sequences": 184,
+    "test_sequences": 45,
+    "sequence_overlap": 0
+  }
+}

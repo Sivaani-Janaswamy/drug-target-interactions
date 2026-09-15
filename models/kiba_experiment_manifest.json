@@ -1,0 +1,147 @@
+{
+  "dataset": "KIBA",
+  "dataset_description": "Kinase Inhibitor BioActivity benchmark dataset (MELTED affinity matrix from ligands_can.txt, proteins.txt, kiba_binding_affinity_v2.txt)",
+  "number_of_interactions": 118254,
+  "unique_drugs": 2111,
+  "unique_canonical_smiles": 2068,
+  "unique_proteins": 229,
+  "unique_protein_sequences": 229,
+  "feature_dimensions": {
+    "drug_features": 1030,
+    "protein_features": 197,
+    "combined_features": 1227
+  },
+  "splits_evaluated": [
+    "random",
+    "cold_drug",
+    "cold_protein"
+  ],
+  "models_evaluated": [
+    "Random Forest",
+    "XGBoost",
+    "Support Vector Regression (SVR)",
+    "Gaussian Process Regression (GPR)"
+  ],
+  "random_seed": 42,
+  "training_entrypoint": "models/train_models.py",
+  "completed_at": "2026-09-15T07:06:35.676843+00:00",
+  "artifacts_directory": "C:\\Users\\sivaa\\Downloads\\MajorProject\\drug-target-interactions\\models\\artifacts",
+  "results_matrix": [
+    {
+      "Split": "Random Split (Baseline)",
+      "Algorithm": "Random Forest",
+      "MSE": 0.3550718361692112,
+      "RMSE": 0.5958790449153345,
+      "Pearson r": 0.7123164801563275,
+      "CI": 0.7999932203246193
+    },
+    {
+      "Split": "Random Split (Baseline)",
+      "Algorithm": "XGBoost",
+      "MSE": 0.2920735776424408,
+      "RMSE": 0.5404383199241527,
+      "Pearson r": 0.765426173615644,
+      "CI": 0.8201839410676718
+    },
+    {
+      "Split": "Random Split (Baseline)",
+      "Algorithm": "Support Vector Regression (SVR)",
+      "MSE": 0.4437724559573315,
+      "RMSE": 0.6661624846517038,
+      "Pearson r": 0.612230213583645,
+      "CI": 0.7343066404801705
+    },
+    {
+      "Split": "Random Split (Baseline)",
+      "Algorithm": "Gaussian Process Regression (GPR)",
+      "MSE": 0.7007163875055683,
+      "RMSE": 0.8370880404745777,
+      "Pearson r": 0.0195592906885514,
+      "CI": 0.5578345519469478
+    },
+    {
+      "Split": "Cold-Drug Split",
+      "Algorithm": "Random Forest",
+      "MSE": 0.3692611540082104,
+      "RMSE": 0.6076686218723247,
+      "Pearson r": 0.6517447079764456,
+      "CI": 0.7601540191907401
+    },
+    {
+      "Split": "Cold-Drug Split",
+      "Algorithm": "XGBoost",
+      "MSE": 0.3599047064781189,
+      "RMSE": 0.5999205834759455,
+      "Pearson r": 0.6578097959673039,
+      "CI": 0.7498761510510683
+    },
+    {
+      "Split": "Cold-Drug Split",
+      "Algorithm": "Support Vector Regression (SVR)",
+      "MSE": 0.4710392970322635,
+      "RMSE": 0.6863230267390593,
+      "Pearson r": 0.5101296397128985,
+      "CI": 0.6816901288666918
+    },
+    {
+      "Split": "Cold-Drug Split",
+      "Algorithm": "Gaussian Process Regression (GPR)",
+      "MSE": 0.6352405772282662,
+      "RMSE": 0.797019809809183,
+      "Pearson r": 0.0347789938863262,
+      "CI": 0.5082124164929152
+    },
+    {
+      "Split": "Cold-Protein Split",
+      "Algorithm": "Random Forest",
+      "MSE": 0.4328967809486163,
+      "RMSE": 0.6579489197108057,
+      "Pearson r": 0.5248380514945282,
+      "CI": 0.6516325335442478
+    },
+    {
+      "Split": "Cold-Protein Split",
+      "Algorithm": "XGBoost",
+      "MSE": 0.3751827478408813,
+      "RMSE": 0.6125216305085734,
+      "Pearson r": 0.6047425754771284,
+      "CI": 0.6851811032810585
+    },
+    {
+      "Split": "Cold-Protein Split",
+      "Algorithm": "Support Vector Regression (SVR)",
+      "MSE": 0.4647354736830719,
+      "RMSE": 0.6817150971506146,
+      "Pearson r": 0.5141577370373647,
+      "CI": 0.6686461500560782
+    },
+    {
+      "Split": "Cold-Protein Split",
+      "Algorithm": "Gaussian Process Regression (GPR)",
+      "MSE": 0.5900495158626005,
+      "RMSE": 0.7681468061917595,
+      "Pearson r": 0.0411515077517706,
+      "CI": 0.5626379810397818
+    }
+  ],
+  "best_models_by_split": {
+    "random": {
+      "model": "XGBoost",
+      "test_rmse": 0.5404383199241527,
+      "test_ci": 0.8201839410676718,
+      "test_pearson_r": 0.765426173615644
+    },
+    "cold_drug": {
+      "model": "XGBoost",
+      "test_rmse": 0.5999205834759455,
+      "test_ci": 0.7498761510510683,
+      "test_pearson_r": 0.6578097959673039
+    },
+    "cold_protein": {
+      "model": "XGBoost",
+      "test_rmse": 0.6125216305085734,
+      "test_ci": 0.6851811032810585,
+      "test_pearson_r": 0.6047425754771284
+    }
+  }
+}

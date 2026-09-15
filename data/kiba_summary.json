@@ -1,14 +1,18 @@
 {
+  "dataset": "KIBA",
+  "description": "Kinase Inhibitor BioActivity benchmark dataset",
   "rows_total": 118254,
   "unique_drugs": 2111,
+  "unique_canonical_smiles": 2068,
   "unique_proteins": 229,
+  "unique_protein_sequences": 229,
   "affinity_min": 0.0,
   "affinity_max": 17.200179498,
   "affinity_mean": 11.719934769944999,
   "random_train_rows": 94603,
   "random_test_rows": 23651,
-  "cold_drug_train_rows": 94088,
-  "cold_drug_test_rows": 24166,
+  "cold_drug_train_rows": 93719,
+  "cold_drug_test_rows": 24535,
   "cold_protein_train_rows": 97850,
   "cold_protein_test_rows": 20404
 }

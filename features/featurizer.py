@@ -1,14 +1,20 @@
 """
+Synthetic benchmark featurizer (1,071 dims) — development/testing only.
+
 Feature Engineering Module for Drug and Protein Vector Extraction.
+NOTE: This featurizer generates 1,071 dimensions (1,030 drug + 41 protein) used by the
+legacy synthetic benchmark and real-time inference prototype.
+For real KIBA research experiments (1,227 dims: 1,030 drug + 197 protein), see extract_features.py.
 
 Computes:
 - Drug Features (RDKit): 1024-bit Morgan Fingerprint (ECFP4) + 6 Physicochemical Descriptors
 - Protein Features: Amino Acid Composition (AAC - 20 dims) + CTD Composition (21 dims)
-- Combined Feature Matrix concatenating Drug and Protein representation vectors
+- Combined Feature Matrix concatenating Drug and Protein representation vectors (1,071 dims)
 """
 
 import os
 import pickle
+import hashlib
 import numpy as np
 import pandas as pd
 from typing import Tuple, List, Dict, Any, Optional
@@ -54,7 +60,8 @@ def compute_drug_features(smiles: str) -> Optional[np.ndarray]:
         return np.concatenate([fp_vec, desc_vec])
     except Exception:
         # Fallback synthetic drug vector if rdkit is unavailable
-        np.random.seed(abs(hash(smiles)) % 100000)
+        seed = int(hashlib.sha256(smiles.encode()).hexdigest(), 16) % 100000
+        np.random.seed(seed)
         return np.random.randn(1030).astype(np.float32)
 
 

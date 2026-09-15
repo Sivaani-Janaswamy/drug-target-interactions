@@ -1,8 +1,13 @@
 """
+Synthetic benchmark — development/testing only.
+
 Data Pipeline Module for KIBA Drug-Target Interaction Dataset.
+NOTE: This script generates a 5,000-row synthetic benchmark dataset using 10 drug tuples
+and 5 kinase targets for local UI development and testing only.
+For real KIBA research experiments, use build_kiba_dataset.py.
 
 Handles:
-- Dataset acquisition (downloading KIBA dataset or generating validated benchmark set)
+- Synthetic benchmark generation (development/testing only)
 - Interaction table cleaning
 - Cold-split generation (Random, Cold-Drug, Cold-Protein splits)
 """
@@ -10,6 +15,7 @@ Handles:
 import os
 import json
 import pickle
+import hashlib
 import numpy as np
 import pandas as pd
 from typing import Dict, List, Tuple, Any
@@ -69,8 +75,8 @@ def generate_benchmark_kiba_data() -> pd.DataFrame:
     rows = []
     for d_id, smiles, d_name in expanded_drugs:
         for p_id, seq, p_name in expanded_kinases:
-            # Deterministic pseudo-random KIBA score
-            seed = (hash(d_id) + hash(p_id)) % 100000
+            # Deterministic pseudo-random KIBA score (process-independent)
+            seed = int(hashlib.sha256(f"{d_id}_{p_id}".encode()).hexdigest(), 16) % 100000
             np.random.seed(seed)
             base_score = 11.0 + np.random.randn() * 1.2
             
