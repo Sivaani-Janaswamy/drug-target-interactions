@@ -9,13 +9,14 @@
 \usepackage{enumitem}
 \usepackage{array}
 \usepackage{caption}
+\usepackage{xcolor}
 
 \usepackage{float}
 \usepackage{textcomp}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
-\hypersetup{colorlinks=true, linkcolor=black, citecolor=blue, urlcolor=blue, pdftitle={Classical Machine Learning for Kinase Drug-Target Affinity Prediction with Cold-Split Evaluation and Interpretable Feature Attribution}}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=blue, urlcolor=blue, pdftitle={Drug Target Interaction Prediction Using Machine Learning}}
 
 \begin{document}
 
@@ -26,14 +27,14 @@
 \centering
 \textbf{Sivaani Janaswamy}\\
 Artificial Intelligence and Data Science\\
-CMR Institute of Technology, Bangalore, India\\
+CMR Institute of Technology, Bengaluru, India\\
 sija23aids@cmrit.ac.in
 
 \vspace{1em}
 
 \textbf{Chandana Punneshetty}\\
 Artificial Intelligence and Data Science\\
-CMR Institute of Technology, Bangalore, India\\
+CMR Institute of Technology, Bengaluru, India\\
 cha23ainds@cmrit.ac.in
 \end{minipage}
 \hfill
@@ -41,26 +42,35 @@ cha23ainds@cmrit.ac.in
 \centering
 \textbf{Krupa S P}\\
 Artificial Intelligence and Data Science\\
-CMR Institute of Technology, Bangalore, India\\
+CMR Institute of Technology, Bengaluru, India\\
 krsp23ainds@cmrit.ac.in
 
 \vspace{1em}
 
 \textbf{Kushi Shetty}\\
 Artificial Intelligence and Data Science\\
-CMR Institute of Technology, Bangalore, India\\
+CMR Institute of Technology, Bengaluru, India\\
 kush23ainds@cmrit.ac.in
+\end{minipage}
+\\[1.25em]
+\begin{minipage}{0.98\textwidth}
+\centering
+\textit{Project Guide}\\
+\textbf{Prof. Bhavana Thomas}\\
+Department of Artificial Intelligence and Data Science\\
+CMR Institute of Technology, Bengaluru, India\\
+\href{mailto:bhavana.t@cmrit.ac.in}{\textcolor{black}{bhavana.t@cmrit.ac.in}}
 \end{minipage}
 }
 
 \maketitle
 
 \begin{abstract}
-\textbf{Abstract}---Predicting drug--target binding affinity is a central task in computational drug discovery, yet conventional evaluation protocols relying on random train/test splits often suffer from similarity-based data leakage, yielding artificially optimistic performance metrics that degrade on genuinely unseen molecular entities. In this work, we present \textbf{DTI-ML}, a systematic empirical evaluation of four classical machine learning regressors---Random Forest (RF), XGBoost, Support Vector Regression (SVR), and Gaussian Process Regression (GPR)---for kinase-inhibitor binding affinity prediction using the real KIBA benchmark dataset. We evaluate all models across three distinct partitioning protocols: standard Random Split, Cold-Drug Split (unseen drug candidates), and Cold-Protein Split (unseen kinase targets). Each drug--target pair is featurized into a concatenated 1,227-dimensional vector combining 1,024-bit Morgan fingerprints (ECFP4) and 6 physicochemical descriptors from RDKit with 197 protein features (AAC, CTD, and PseAAC). We apply SHapley Additive exPlanations (SHAP) to provide local interpretability for individual predictions. Across 12 experiment cells (4~models $\times$ 3 splits, seed~42), XGBoost consistently achieves the lowest root-mean-square error, while cold-split evaluation reveals a substantial generalization gap relative to random-split performance.
+Predicting drug--target binding affinity is a central task in computational drug discovery, yet conventional evaluation protocols relying on random train/test splits often suffer from similarity-based data leakage, yielding artificially optimistic performance metrics that degrade on genuinely unseen molecular entities. In this work, we present \textbf{DTI-ML}, a systematic empirical evaluation of four classical machine learning regressors---Random Forest (RF), XGBoost, Support Vector Regression (SVR), and Gaussian Process Regression (GPR)---for kinase-inhibitor binding affinity prediction using the real KIBA benchmark dataset. We evaluate all models across three distinct partitioning protocols: standard Random Split, Cold-Drug Split (unseen drug candidates), and Cold-Protein Split (unseen kinase targets). Each drug--target pair is featurized into a concatenated 1,227-dimensional vector combining 1,024-bit Morgan fingerprints (ECFP4) and 6 physicochemical descriptors from RDKit with 197 protein features (AAC, CTD, and PseAAC). We apply SHapley Additive exPlanations (SHAP) to provide local interpretability for individual predictions. Across 12 experiment cells (4~models $\times$ 3 splits, seed~42), XGBoost consistently achieves the lowest root-mean-square error, while cold-split evaluation reveals a substantial generalization gap relative to random-split performance.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Index Terms---drug--target affinity, KIBA, classical machine learning, cold-split evaluation, data leakage, SHAP, interpretability, kinase inhibitors
+drug--target affinity, KIBA, classical machine learning, cold-split evaluation, data leakage, SHAP, interpretability, kinase inhibitors
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -79,7 +89,7 @@ Most existing literature evaluates DTI models using standard \emph{random train/
     \item \textbf{Leakage-Safe Cold-Split Evaluation:} Quantification of performance degradation across Random, Cold-Drug, and Cold-Protein splits, with explicit leakage checks confirming zero drug-ID and protein-ID overlap between training and test sets.
     \item \textbf{1,227-Dimensional Joint Representation:} Integration of RDKit Morgan fingerprints (1,024-bit ECFP4) and 6 physicochemical descriptors with 197 protein features (AAC, CTD, PseAAC).
     \item \textbf{SHAP-Based Local Explainability:} Per-prediction feature attribution for individual affinity predictions, providing interpretable insight into which molecular and protein features drive model decisions.
-    \item \textbf{Interactive Web Application:} A React and FastAPI application rendering the approved six-page product interface with real-time affinity scoring and SHAP explanations.
+    \item \textbf{Interactive Web Application:} A React and FastAPI application provides real-time affinity scoring and SHAP explanations.
 \end{enumerate}
 
 \section{Related Work}
@@ -87,21 +97,21 @@ Most existing literature evaluates DTI models using standard \emph{random train/
 
 \subsection{Drug--Target Interaction Prediction}
 
-Early computational approaches to DTI prediction relied on kernel-based similarity methods such as \textbf{KronRLS} and \textbf{SimBoost}~\cite{ref1,ref2}. KronRLS employs a regularized least-squares framework on a Kronecker product of drug and protein similarity kernels, while SimBoost uses gradient boosting trees on concatenated drug and protein descriptors. These methods compute similarity matrices over drug and protein profiles and combine them to predict binding affinities. While effective on benchmark datasets, they do not explicitly model the underlying molecular biology of drug--target recognition.
+Early computational approaches to DTI prediction included \textbf{SimBoost}~\cite{simboost}, which uses gradient boosting trees on features derived from drug and protein similarity information. Such methods can perform well on benchmark datasets but do not explicitly model the molecular recognition process.
 
-With the advent of deep learning, models such as \textbf{DeepDTA}~\cite{ref3} (convolutional neural networks operating on SMILES strings and protein sequences) and \textbf{GraphDTA}~\cite{ref4} (graph neural networks on molecular graphs) established competitive benchmark results on the KIBA and Davis datasets. DeepDTA employs two separate CNNs---one for SMILES-based drug representations and one for protein sequences---which are concatenated and passed through fully connected layers. GraphDTA constructs molecular graphs from SMILES strings and applies graph convolutional networks to learn structural representations. These approaches have demonstrated strong predictive performance, but they typically require large training datasets and substantial computational resources, and their predictions are often opaque to domain scientists.
+With the advent of deep learning, models such as \textbf{DeepDTA}~\cite{deepdta} (convolutional neural networks operating on SMILES strings and protein sequences) and \textbf{GraphDTA}~\cite{graphdta} (graph neural networks on molecular graphs) established competitive benchmark results on the KIBA and Davis datasets. Recent surveys and studies describe deep-learning, neighborhood-based, attention-based, multimodal-fusion, graph-autoencoder, and structural graph-learning approaches to DTI prediction~\cite{rajaei2025,byeon2025,reddy2023,liu2024,wang2022,ma2022,wang2023,wang2025,li2024}. These approaches can offer strong predictive performance, but they often require larger training datasets and substantial computational resources, and their predictions can be difficult for domain scientists to interpret.
 
 \subsection{Classical Machine Learning for DTI}
 
-Classical machine learning models offer a compelling alternative for DTI prediction. Random Forest and gradient-boosted trees provide strong baselines with inherent feature importance measures, while Support Vector Regression and Gaussian Process Regression offer different trade-offs between model complexity and interpretability. Unlike deep learning approaches, classical models can be trained on modest-sized datasets, require less computational infrastructure, and produce more readily interpretable results.
+Classical machine learning models offer a practical alternative for DTI prediction. Random Forest~\cite{breiman2001} and gradient-boosted trees such as XGBoost~\cite{chen2016} provide strong tabular-data baselines with feature-importance measures, while Support Vector Regression and Gaussian Process Regression offer different trade-offs between model complexity and interpretability. Unlike many deep-learning approaches, classical models can be trained on modest-sized datasets and require less computational infrastructure.
 
 \subsection{Evaluation Protocols and Data Leakage}
 
-A critical concern in DTI model evaluation is the choice of train/test split protocol. Standard random splits may place near-duplicate drug molecules or homologous kinase proteins in both training and test sets, allowing the model to exploit structural similarities rather than learning genuine binding determinants~\cite{ref5}. Cold-start evaluation protocols---in which test drugs or proteins are entirely absent from training---have been proposed to measure genuine generalization, but unified evaluations across multiple cold-start protocols remain relatively rare.
+An important issue in DTI model evaluation is the choice of train/test split protocol. Standard random splits may place near-duplicate drug molecules or homologous kinase proteins in both training and test sets, allowing models to leverage shared structure instead of learning transferable binding determinants~\cite{pahikkala2015,park2012}. Cold-start evaluation protocols---in which test drugs or proteins are entirely absent from training---better probe performance on unseen entities.
 
 \subsection{Interpretable Machine Learning in Drug Discovery}
 
-The SHapley Additive exPlanations (SHAP) framework~\cite{ref6} provides a principled approach to decomposing individual predictions into per-feature contributions. In the context of drug discovery, SHAP-based explanations can identify which molecular substructures and protein features most strongly influence a predicted binding affinity, enabling researchers to assess whether a model relies on chemically meaningful patterns rather than dataset artifacts.
+The SHapley Additive exPlanations (SHAP) framework~\cite{shap2017,treeshap2020} provides a principled approach to decomposing individual predictions into per-feature contributions. In drug discovery, SHAP-based explanations can identify molecular substructures and protein features that most strongly influence a predicted affinity, helping researchers assess whether a model relies on chemically meaningful patterns rather than dataset artifacts.
 
 \section{Methodology}
 \label{sec:method}
@@ -109,7 +119,7 @@ The SHapley Additive exPlanations (SHAP) framework~\cite{ref6} provides a princi
 \subsection{Dataset Description}
 \label{subsec:dataset}
 
-The current evaluation uses the \textbf{KIBA} (Kinase Inhibitor BioActivity) benchmark dataset. KIBA is a curated collection of kinase--inhibitor binding affinity measurements derived from the MELTED affinity matrix, compiled from ligand and protein sequence data.
+The current evaluation uses the \textbf{KIBA} (Kinase Inhibitor BioActivity) benchmark dataset~\cite{kiba2014}. KIBA integrates kinase bioactivity measurements involving $K_i$, $K_d$, and IC$_{50}$ from multiple sources.
 
 The dataset contains the following statistics:
 
@@ -137,7 +147,7 @@ The prediction task is formulated as supervised regression: given a drug SMILES 
 Each drug molecule is featurized into a \textbf{1,030-dimensional} numeric vector consisting of:
 
 \begin{itemize}[leftmargin=*, itemsep=0pt]
-    \item \textbf{Morgan Fingerprint (1,024 dimensions):} A 1,024-bit Extended Connectivity Fingerprint (ECFP4, radius~2) capturing circular substructural environments within the molecule. Each bit indicates the presence or absence of a particular subgraph pattern up to radius~2.
+    \item \textbf{Morgan Fingerprint (1,024 dimensions):} A 1,024-bit Extended Connectivity Fingerprint (ECFP4, radius~2) capturing circular substructural environments within the molecule~\cite{rogers2010}.
     \item \textbf{Physicochemical Descriptors (6 dimensions):} Six RDKit-computed molecular descriptors: Molecular Weight (MW), Wildman--Crippen LogP, Topological Polar Surface Area (TPSA), Hydrogen Bond Donors (HBD), Hydrogen Bond Acceptors (HBA), and Rotatable Bonds.
 \end{itemize}
 
@@ -149,9 +159,9 @@ The 1,024-bit fingerprint captures nonlinear structural features that are diffic
 Each protein sequence is featurized into a \textbf{197-dimensional} numeric vector consisting of:
 
 \begin{enumerate}[leftmargin=*, itemsep=0pt]
-    \item \textbf{Amino Acid Composition---AAC (20 dimensions):} A normalized 20-dimensional frequency distribution of the 20 standard amino acids in the protein sequence.
-    \item \textbf{Composition/Transition/Distribution---CTD (147 dimensions):} A composition representation encoding three physicochemical properties (hydrophobicity, volume, polarity) across three descriptors (composition, transition, distribution), yielding $3 \times 7 \times 7 = 147$ dimensions.
-    \item \textbf{Pseudo-Amino Acid Composition---PseAAC (30 dimensions):} An extension of AAC that incorporates sequence-order effects through pseudo-components, capturing local sequence patterns beyond simple amino-acid frequencies.
+    \item \textbf{Amino Acid Composition---AAC (20 dimensions):} A normalized frequency distribution over the 20 standard amino acids in the protein sequence.
+    \item \textbf{Composition/Transition/Distribution---CTD (147 dimensions):} A representation encoding seven physicochemical property groups across composition, transition, and distribution descriptors, yielding 147 dimensions (7 $\times$ 21).
+    \item \textbf{Pseudo-Amino Acid Composition---PseAAC (30 dimensions):} An extension of AAC that incorporates sequence-order effects through pseudo-components, capturing local sequence patterns beyond simple amino-acid frequencies (20 amino-acid terms + 10 sequence-order terms).
 \end{enumerate}
 
 \subsection{Feature Vector Construction}
@@ -230,9 +240,9 @@ These metrics capture different aspects of regression performance: Eqs.~\eqref{e
 \subsection{Model Explainability Using SHAP}
 \label{subsec:shap}
 
-SHAP (SHapley Additive exPlanations) is applied to decompose individual affinity predictions into per-feature contributions. For tree-based models (RF, XGBoost), TreeExplainer provides exact Shapley values; for other models, kernel-based fallbacks are employed.
+SHAP (SHapley Additive exPlanations) is applied to decompose individual affinity predictions into per-feature contributions. For tree-based models (RF, XGBoost), TreeExplainer provides exact Shapley values; for other models, kernel-based fallbacks are employed~\cite{treeshap2020}.
 
-The Shapley value for feature $j$ is formally defined as~\cite{ref6}:
+The Shapley value for feature $j$ is formally defined as~\cite{shap2017}:
 
 \begin{equation}
 \phi_j(f, \mathbf{x}) = \sum_{S \subseteq F \setminus \{j\}} \frac{|S|!(|F| - |S| - 1)!}{|F|!} \left[f(\mathbf{x}_S \cup \{x_j\}) - f(\mathbf{x}_S)\right]
@@ -293,7 +303,7 @@ Fig.~\ref{fig:results} summarizes these results graphically.
 
 Under the random split, XGBoost achieves the lowest RMSE (0.540) and the highest CI (0.820) and Pearson~$r$ (0.765). GPR performs substantially worse, with Pearson~$r = 0.020$ and $R^2 = 0.195$, indicating near-random predictive ability. SVR achieves moderate performance (Pearson~$r = 0.612$), and Random Forest is competitive (Pearson~$r = 0.712$).
 
-However, the random split should not be interpreted as evidence of genuine generalization to unseen drugs or proteins. Because the random split does not control for drug or protein identity, the model may exploit structural similarities that are present in both training and test sets. The strong performance under random evaluation is therefore an upper bound rather than a measure of practical utility.
+However, the random split should not be interpreted as evidence of performance on unseen drugs or proteins. Because it does not control for drug or protein identity, the model may exploit similarities shared by the training and test sets. The strong performance under random evaluation is therefore an upper bound rather than a measure of practical utility.
 
 \subsection{Cold-Drug Evaluation}
 \label{subsec:cold_drug}
@@ -314,9 +324,9 @@ The performance gap between cold-drug and cold-protein evaluation is noteworthy.
 \subsection{Model Comparison}
 \label{subsec:comparison}
 
-Across all three splits, XGBoost achieves the lowest RMSE and highest CI and Pearson~$r$. Random Forest provides comparable performance on the random and cold-drug splits but shows greater degradation under cold-protein evaluation. SVR offers intermediate performance, while GPR substantially underperforms, particularly on the random split where its Pearson~$r$ is effectively zero.
+XGBoost generally achieved the strongest overall results, although Random Forest obtained a slightly higher CI under the cold-drug split. Random Forest provides comparable performance on the random and cold-drug splits but shows greater degradation under cold-protein evaluation. SVR offers intermediate performance, while GPR substantially underperforms, particularly on the random split where its Pearson~$r$ is effectively zero.
 
-It is important to note that GPR's poor performance may partly reflect the subsampling strategy (2,500 training rows), which is substantially smaller than the 20,000 rows used by RF and XGBoost. A more thorough comparison with equal training data would require additional experiments. Similarly, SVR's performance may be affected by its 6,000-row training subsample. These are limitations of the current experimental setup rather than inherent deficiencies of the models.
+GPR's poor performance may partly reflect the subsampling strategy (2,500 training rows), which is substantially smaller than the 20,000 rows used by RF and XGBoost. A more thorough comparison with equal training data would require additional experiments. Similarly, SVR's performance may be affected by its 6,000-row training subsample. These are limitations of the current experimental setup rather than inherent deficiencies of the models.
 
 \subsection{Explainability and SHAP Analysis}
 \label{subsec:shap_results}
@@ -339,18 +349,18 @@ An example SHAP attribution is shown in Fig.~\ref{fig:shap}.
 \subsection{Discussion}
 \label{subsec:discussion}
 
-The results highlight a significant generalization gap between random-split and cold-split evaluation. All models perform better under random splits, but this advantage is partly attributable to data leakage rather than genuine learning of binding determinants. The cold-split evaluations provide a more honest assessment of a model's ability to generalize to unseen drugs and proteins.
+The results highlight a significant gap between random-split and cold-split evaluation. All models perform better under random splits, but this advantage is partly attributable to leakage rather than transferable learning of binding determinants. The cold-split evaluations provide a stricter assessment of performance on unseen drugs and proteins.
 
-The finding that XGBoost consistently outperforms the other models across all splits aligns with the broader machine-learning literature on tabular data, where gradient-boosted tree ensembles often achieve strong performance. However, the performance gap between XGBoost and Random Forest narrows under cold-drug evaluation, suggesting that the additional complexity of XGBoost may not be necessary for practical drug-target prediction when generalization to unseen drugs is the primary concern.
+XGBoost generally achieved the strongest overall results, consistent with the broader machine-learning literature on tabular data, where gradient-boosted tree ensembles often perform well. However, the performance gap between XGBoost and Random Forest narrows under cold-drug evaluation, suggesting that the additional complexity of XGBoost may not be necessary when generalization to unseen drugs is the primary concern.
 
-GPR's consistently poor performance across all splits, despite its Bayesian formulation and uncertainty estimates, suggests that the Gaussian Process framework may not scale well to the high-dimensional, heterogeneous feature space of drug--target pairs when training data is limited. This is consistent with the known computational and statistical limitations of kernel methods in high dimensions.
+GPR performs weakly in these experiments, despite its Bayesian formulation and uncertainty estimates. This outcome may reflect the high-dimensional, heterogeneous feature space of drug--target pairs together with the limited GPR training subset; it should not be treated as a general conclusion about Gaussian Process methods.
 
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
 
 In this work, we developed and evaluated an interpretable machine-learning framework for drug--target affinity prediction using real KIBA data, with particular emphasis on generalization to unseen drugs and proteins. Across 12 experiment cells (4~models $\times$ 3 splits, seed~42, 118,254 interactions, 1,227-dimensional features), we demonstrate that cold-split evaluation reveals a substantial generalization gap relative to random-split performance. XGBoost achieves the strongest overall performance, while Random Forest provides comparable predictive performance with greater interpretability. SHAP-based explanations provide local interpretability for individual predictions, enabling researchers to inspect which molecular and protein features drive model decisions.
 
-These results establish DTI-ML as a reproducible, interpretable benchmark for kinase affinity regression, with honest evaluation through leakage-safe cold-split protocols.
+These results present DTI-ML as an interpretable benchmark for kinase affinity regression, using leakage-controlled cold-split protocols.
 
 \subsection{Future Work}
 \label{subsec:future}
@@ -366,7 +376,6 @@ The following experiments are planned in a future phase:
     \item \textbf{ESM-2/ProtT5 Protein Representations:} Replace hand-engineered protein features with large-scale protein language model embeddings to capture richer sequence-level information.
     \item \textbf{Davis External Validation:} Evaluate the trained models on the Davis dataset as an external validation test to assess cross-dataset generalization.
     \item \textbf{Uncertainty Calibration:} Calibrate model uncertainty estimates (particularly from GPR and SVR) to ensure that predicted confidence intervals are reliable.
-    \item \textbf{Further Manuscript Refinement:} Strengthen the writing, expand the literature survey, and prepare the manuscript for formal submission after additional review.
 \end{enumerate}
 
 These experiments have \textbf{not} been completed and should not be interpreted as reported results.
@@ -390,22 +399,51 @@ These experiments have \textbf{not} been completed and should not be interpreted
 
 The pipeline was implemented in Python using scikit-learn (Random Forest, SVR, GPR), XGBoost, RDKit (molecular featurization), SHAP (interpretability), FastAPI (backend), and React (frontend). Models were trained on hardware with standard computing resources. Training times per model vary by subsampling strategy: RF and XGBoost trained on 20,000 rows, SVR on 6,000 rows, and GPR on 2,500 rows.
 
+\vspace{-0.8\baselineskip}
 \section{References}
 \label{sec:refs}
 
 \begin{thebibliography}{99}
 
-\bibitem{ref1} T.~He, X.~Wang, and Y.~Liu, ``SimBoost: a read-across approach for predicting drug--target binding affinities using gradient boosting trees,'' \textit{Bioinformatics}, vol.~33, no.~7, pp.~1087--1094, 2017.
+\bibitem{simboost} T.~He, M.~Heidemeyer, F.~Ban, A.~Cherkasov, and M.~Ester, ``SimBoost: a read-across approach for predicting drug--target binding affinities using gradient boosting machines,'' \textit{Journal of Cheminformatics}, vol.~9, Art.~no.~24, 2017, doi: 10.1186/s13321-017-0209-z.
 
-\bibitem{ref2} H.~\O zt\"{u}rk, A.~\O zg\"{u}r, and P.~\c{C}. Xi, ``DeepDTA: deep drug--target binding affinity prediction,'' in \textit{Proc. Bioinformatics (ICB)}, vol.~34, no.~17, 2018, pp.~i821--i829.
+\bibitem{deepdta} H.~\"{O}zt\"{u}rk, A.~\"{O}zg\"{u}r, and E.~\"{O}zkirimli, ``DeepDTA: deep drug--target binding affinity prediction,'' \textit{Bioinformatics}, vol.~34, no.~17, pp.~i821--i829, 2018, doi: 10.1093/bioinformatics/bty593.
 
-\bibitem{ref3} T.~Nguyen, H.~N.~Le, and T.~Quinn, ``GraphDTA: predicting drug--target binding affinity with graph neural networks,'' \textit{Bioinformatics}, vol.~37, no.~8, pp.~1140--1147, 2021.
+\bibitem{graphdta} T.~Nguyen, H.~Le, T.~P.~Quinn, T.~Nguyen, T.~D.~Le, and S.~Venkatesh, ``GraphDTA: predicting drug--target binding affinity with graph neural networks,'' \textit{Bioinformatics}, vol.~37, no.~8, pp.~1140--1147, 2021.
 
-\bibitem{ref4} S.~M.~Lundberg and S.-I.~Lee, ``A unified approach to interpreting model predictions,'' in \textit{Advances in Neural Information Processing Systems}, vol.~30, 2017, pp.~4765--4774.
+\bibitem{shap2017} S.~M.~Lundberg and S.-I.~Lee, ``A unified approach to interpreting model predictions,'' in \textit{Advances in Neural Information Processing Systems}, vol.~30, pp.~4765--4774, 2017.
 
-\bibitem{ref5} J.~L.~Davis and T.~M.~Martinez, ``Generalization in drug--target interaction prediction,'' \textit{Journal of Chemical Information and Modeling}, vol.~59, no.~5, pp.~2163--2173, 2019.
+\bibitem{treeshap2020} S.~M.~Lundberg \textit{et al.}, ``From local explanations to global understanding with explainable AI for trees,'' \textit{Nature Machine Intelligence}, vol.~2, no.~1, pp.~56--67, 2020.
 
-\bibitem{ref6} S.~M.~Lundberg, G.~Erion, H.~H.~Chen, A.~DeGrave, J.~M.~Prutkin, B.~Nair, R.~Katz, J.~Himmelfarb, N.~Bansal, and K.~Lee, ``From local explanations to global understanding with explainable AI for trees,'' \textit{Nature Machine Intelligence}, vol.~2, no.~1, pp.~56--67, 2020.
+\bibitem{kiba2014} J.~Tang \textit{et al.}, ``Making sense of large-scale kinase inhibitor bioactivity data sets: a comparative and integrative analysis,'' \textit{Journal of Chemical Information and Modeling}, vol.~54, no.~3, pp.~735--743, 2014, doi: 10.1021/ci400709d.
+
+\bibitem{pahikkala2015} T.~Pahikkala, A.~Airola, S.~Pietil\"{a}, S.~Shakyawar, A.~Szwajda, J.~Tang, and T.~Aittokallio, ``Toward more realistic drug--target interaction predictions,'' \textit{Briefings in Bioinformatics}, vol.~16, no.~2, pp.~325--337, 2015, doi: 10.1093/bib/bbu010.
+
+\bibitem{park2012} Y.~Park and E.~M.~Marcotte, ``Flaws in evaluation schemes for pair-input computational predictions,'' \textit{Nature Methods}, vol.~9, no.~12, pp.~1134--1136, 2012.
+
+\bibitem{chen2016} T.~Chen and C.~Guestrin, ``XGBoost: A scalable tree boosting system,'' in \textit{Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining}, pp.~785--794, 2016.
+
+\bibitem{breiman2001} L.~Breiman, ``Random forests,'' \textit{Machine Learning}, vol.~45, no.~1, pp.~5--32, 2001.
+
+\bibitem{rogers2010} D.~Rogers and M.~Hahn, ``Extended-connectivity fingerprints,'' \textit{Journal of Chemical Information and Modeling}, vol.~50, no.~5, pp.~742--754, 2010.
+
+\bibitem{rajaei2025} F.~Rajaei \textit{et al.}, ``AI-Based computational methods in early drug discovery and post market drug assessment: A survey,'' \textit{IEEE/ACM Transactions on Computational Biology and Bioinformatics}, vol.~22, no.~1, pp.~97--115, 2025, doi: 10.1109/TCBB.2024.3492708.
+
+\bibitem{byeon2025} H.~Byeon \textit{et al.}, ``Advanced deep learning techniques for drug target interaction prediction in biomedical research,'' in \textit{Proceedings of the 2025 4th OPJU International Technology Conference}, pp.~916--921, 2025, doi: 10.1109/OTCON65728.2025.11070938.
+
+\bibitem{wang2022} S.~Wang, J.~Li, Y.~Wang, and L.~Juan, ``A neighborhood-based global network model to predict drug-target interactions,'' \textit{IEEE/ACM Transactions on Computational Biology and Bioinformatics}, vol.~19, no.~4, pp.~2017--2025, 2022, doi: 10.1109/TCBB.2021.3064614.
+
+\bibitem{reddy2023} R.~Reddy, K.~M., N.~Mallikarjuna, and M.~Swetha, ``Drug Target Interaction Prediction by using Deep Learning Technique,'' in \textit{Proceedings of the 2023 International Conference on Network, Multimedia and Information Technology (NMITCON)}, 2023, doi: 10.1109/NMITCON58196.2023.10275870.
+
+\bibitem{liu2024} Y.~Liu, H.~Yang, L.~Zhang, H.~Cai, M.~Guo, and L.~Xing, ``A multi-feature and dual-attribute interaction aggregation model for predicting drug-target interactions,'' \textit{IEEE Access}, vol.~12, pp.~113463--113473, 2024, doi: 10.1109/ACCESS.2024.3442931.
+
+\bibitem{ma2022} X.~Ma and Y.~Cheng, ``Prediction of drug-target interaction based on multi-head self-attention,'' in \textit{Proceedings of the 2022 IEEE Conference on Telecommunications, Optics and Computer Science}, 2022, doi: 10.1109/TOCS56154.2022.10016085.
+
+\bibitem{wang2023} K.~Wang and M.~Li, ``Fusion-based deep learning architecture for detecting drug-target binding affinity using target and drug sequence and structure,'' \textit{IEEE Journal of Biomedical and Health Informatics}, vol.~27, no.~12, pp.~6112--6120, 2023, doi: 10.1109/JBHI.2023.3315073.
+
+\bibitem{wang2025} M.~Wang, X.~Lei, L.~Liu, J.~Chen, and F.-X.~Wu, ``GIAE-DTI: Predicting drug-target interactions based on heterogeneous network and GIN-based graph autoencoder,'' \textit{IEEE Journal of Biomedical and Health Informatics}, vol.~29, no.~11, pp.~7896--7909, 2025, doi: 10.1109/JBHI.2024.3458794.
+
+\bibitem{li2024} H.~Li and Z.~Hu, ``Drug-target interaction prediction via deep multimodal graph and structural learning,'' in \textit{Proceedings of the 46th Annual International Conference of the IEEE Engineering in Medicine and Biology Society}, pp.~1--7, 2024, doi: 10.1109/EMBC53108.2024.10782657.
 
 \end{thebibliography}
 
